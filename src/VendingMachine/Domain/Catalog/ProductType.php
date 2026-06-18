@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\VendingMachine\Domain\Catalog;
 
-
 enum ProductType: string
 {
     case SODA = 'soda';

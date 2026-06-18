@@ -10,4 +10,6 @@ enum MachineState: string
     case HAS_INSERTED_COINS = 'has_inserted_coins';
     case DISPENSING = 'dispensing';
     case OUT_OF_SERVICE = 'out_of_service';
+
+    case IN_MAINTENANCE = 'in_maintenance';
 }

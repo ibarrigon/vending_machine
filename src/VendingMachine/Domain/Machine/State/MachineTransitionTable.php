@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace App\VendingMachine\Domain\Machine\State;
 
-use App\VendingMachine\Domain\Machine\State\MachineState;
-
 final class MachineTransitionTable
 {
     private const OUTCOME_TRANSITIONS = [
@@ -34,7 +32,7 @@ final class MachineTransitionTable
 
     public static function eventTransition(MachineState $state, MachineEvent $event): MachineState
     {
-        return self::EVENT_TRANSITIONS[$state->value][$event->value] 
+        return self::EVENT_TRANSITIONS[$state->value][$event->value]
         ?? throw new InvalidMachineStateTransitionException();
     }
 }

@@ -12,6 +12,11 @@ build:
 logs:
 	$(COMPOSE) logs -f
 
-shell:
-	docker compose exec app bash
+install:
+	$(COMPOSE) exec app composer install
 
+shell:
+	$(COMPOSE) exec app bash
+
+clear:
+	$(COMPOSE) exec app bin/console cache:clear

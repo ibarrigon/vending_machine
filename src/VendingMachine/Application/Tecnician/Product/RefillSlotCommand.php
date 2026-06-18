@@ -10,6 +10,7 @@ final readonly class RefillSlotCommand
 {
     public function __construct(
         public int $machineId,
-        public ProductType $product
-    ) {}
+        public ProductType $product,
+    ) {
+    }
 }

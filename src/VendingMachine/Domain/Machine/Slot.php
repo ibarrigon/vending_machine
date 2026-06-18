@@ -1,6 +1,6 @@
 <?php
 
-declare (strict_types=1);
+declare(strict_types=1);
 
 namespace App\VendingMachine\Domain\Inventory;
 
@@ -13,7 +13,7 @@ final class Slot
 
     public function __construct(
         private Product $product,
-        private int $quantity
+        private int $quantity,
     ) {
         if ($quantity < 0 || $quantity > self::MAX_CAPACITY) {
             throw new InvalidSlotQuantityException();
@@ -31,7 +31,7 @@ final class Slot
             throw new OutOfStockException();
         }
 
-        $this->quantity--;
+        --$this->quantity;
     }
 
     public function product(): Product
@@ -57,5 +57,5 @@ final class Slot
     public static function maxCapacity(): int
     {
         return self::MAX_CAPACITY;
-    }    
+    }
 }

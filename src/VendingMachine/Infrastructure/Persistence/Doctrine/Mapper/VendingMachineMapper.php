@@ -14,8 +14,7 @@ use App\VendingMachine\Domain\Machine\CashFlow\InsertedCoins;
 use App\VendingMachine\Domain\VendingMachine;
 use App\VendingMachine\Infrastructure\Persistence\Doctrine\Entity\VendingMachineRecord;
 
-
-final class VendingMachineMapper
+final readonly class VendingMachineMapper
 {
     public function toDomain(VendingMachineRecord $record): VendingMachine
     {
@@ -49,7 +48,7 @@ final class VendingMachineMapper
     private function mapSlotsToDomain(array $slots): array
     {
         return array_map(
-            fn(array $slot) => new Slot(
+            fn (array $slot) => new Slot(
                 product: new Product(
                     ProductType::from($slot['product']),
                     $slot['price']
@@ -63,7 +62,7 @@ final class VendingMachineMapper
     private function mapSlotsToPersistence(array $slots): array
     {
         return array_map(
-            fn(Slot $slot) => [
+            fn (Slot $slot) => [
                 'product' => $slot->product()->type->value,
                 'price' => $slot->product()->price,
                 'quantity' => $slot->quantity(),
@@ -81,7 +80,7 @@ final class VendingMachineMapper
     {
         return InsertedCoins::load(
             array_map(
-                fn(int $value) => Coin::from($value),
+                fn (int $value) => Coin::from($value),
                 $data
             )
         );
@@ -90,7 +89,7 @@ final class VendingMachineMapper
     private function mapInsertedCoinsToPersistence(InsertedCoins $coins): array
     {
         return array_map(
-            fn(Coin $coin) => $coin->value,
+            fn (Coin $coin) => $coin->value,
             $coins->coins()
         );
     }

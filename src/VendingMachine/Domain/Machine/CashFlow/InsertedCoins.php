@@ -10,8 +10,9 @@ final readonly class InsertedCoins
 {
     /** @param Coin[] $coins */
     public function __construct(
-        private array $coins = []
-    ) {}
+        private array $coins = [],
+    ) {
+    }
 
     /**
      * @param Coin[] $coins
@@ -20,7 +21,6 @@ final readonly class InsertedCoins
     {
         return new self($coins);
     }
-
 
     public static function empty(): self
     {
@@ -31,7 +31,7 @@ final readonly class InsertedCoins
     {
         return new self([
             ...$this->coins,
-            $coin
+            $coin,
         ]);
     }
 
@@ -47,7 +47,7 @@ final readonly class InsertedCoins
     {
         return array_reduce(
             $this->coins,
-            fn(int $sum, Coin $coin) => $sum + $coin->value,
+            fn (int $sum, Coin $coin) => $sum + $coin->value,
             0
         );
     }
@@ -59,6 +59,6 @@ final readonly class InsertedCoins
 
     public function isEmpty(): bool
     {
-        return $this->coins === [];
+        return [] === $this->coins;
     }
 }

@@ -9,5 +9,6 @@ final class SelectProductCommand
     public function __construct(
         public readonly int $machineId,
         public readonly string $product,
-    ) {}
+    ) {
+    }
 }

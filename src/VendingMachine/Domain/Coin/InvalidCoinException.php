@@ -4,4 +4,6 @@ declare(strict_types=1);
 
 namespace App\VendingMachine\Domain\Coin;
 
-final class InvalidCoinException extends \Exception {}
+final class InvalidCoinException extends \Exception
+{
+}

@@ -1,10 +1,14 @@
-.PHONY: cs phpstan rector qa
+.PHONY: cs cs-dry phpstan quality
 
+cs:
+	$(COMPOSE) exec app vendor/bin/php-cs-fixer fix
+
+cs-dry:
+	$(COMPOSE) exec app vendor/bin/php-cs-fixer fix --dry-run --diff
+	
 phpstan:
-	docker compose exec app vendor/bin/phpstan analyse
+	$(COMPOSE) exec app vendor/bin/phpstan analyse
 
-rector:
-	docker compose exec app vendor/bin/rector process
-
-qa: 
-	phpstan test
+quality:
+	@$(MAKE) -s cs
+	@$(MAKE) -s phpstan

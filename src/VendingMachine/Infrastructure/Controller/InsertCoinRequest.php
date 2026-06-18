@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types= 1);
+declare(strict_types=1);
 
 namespace App\VendingMachine\Infrastructure\Controller;
 
@@ -10,7 +10,8 @@ final readonly class InsertCoinRequest
 {
     public function __construct(
         #[Assert\NotNull]
-        #[Assert\Choice([5, 10, 25, 100])]        
+        #[Assert\Choice([5, 10, 25, 100])]
         public int $coin,
-    ) {}
+    ) {
+    }
 }

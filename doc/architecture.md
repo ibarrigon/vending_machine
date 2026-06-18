@@ -11,6 +11,11 @@ the coins the last client put (I know that vending machine lost it, but I make c
 I don't put any security like ROLES or something similar, but I understand an API with to user types, required it. For example,
 one client dont need to know there's admin part in the API (in this case, Tecnician operations)
 
+I use doctrine to read and save in BD, but I don't like migrations. Maybe you can have everything versioned, but I prefer to 
+evolve the BD manually, like you do if the DB Administrator is another division of the company, creating an issue with the alter. 
+
+Obviously, I can work with migrations too but here I prefer to be an "old school man".
+
 # Domain
 
 Business model. Here is everything our business knows, using its own language
@@ -19,14 +24,14 @@ Business model. Here is everything our business knows, using its own language
 This is the core of the Domain. It provide the required funcionality with business rules, or, in DDD, Domain.
 
 Like the statement describe, you have 3 available actions for the Client:
-1. __Insert coin__
-2. __Return coins__
-3. __Select product__
+1. __Insert coin__: Code to accept coins from client
+2. __Return coins__: The client gets his coins
+3. __Select product__: Get the product, the change and remaining balance
 
 And there is 3 available actions for the Tecnician:
-1. Refill slots
-2. Refill coins
-3. Retire coins
+1. __Refill slot__: Fill the slot
+2. __Refill coins__: Add coins for change
+3. __Retire coins__: Remove exceded change
 
 ## Machine
 This folder contains everithing is insede the machine:

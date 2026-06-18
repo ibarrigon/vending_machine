@@ -24,7 +24,8 @@ final class VendingMachine
         private array $slots,
         private CoinMachine $coinMachine,
         private MachineState $state = MachineState::IDLE,
-    ) {}
+    ) {
+    }
 
     public static function load(
         int $id,
@@ -119,5 +120,25 @@ final class VendingMachine
     public function refillChange(Coin $coin, int $quantity): RefillResult
     {
         return $this->coinMachine->refill($coin, $quantity);
+    }
+
+    public function open(): void
+    {
+        $this->state = MachineState::IN_MAINTENANCE;
+    }
+
+    public function close(): void
+    {
+        $this->state = MachineState::IDLE;
+    }
+
+    public function canBeRefilled(): bool
+    {
+        return MachineState::IN_MAINTENANCE === $this->state;
+    }
+
+    public function isInMaintenance(): bool
+    {
+        return MachineState::IN_MAINTENANCE === $this->state;
     }
 }

@@ -9,5 +9,6 @@ final readonly class SelectProductResponse
     public function __construct(
         public string $product,
         public array $change,
-    ) {}
+    ) {
+    }
 }

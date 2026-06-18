@@ -11,11 +11,12 @@ final readonly class MachineTransactionService
     public function __construct(
         private LockFactory $lockFactory,
         private VendingMachineRepositoryInterface $repository,
-    ) {}
+    ) {
+    }
 
     public function run(int $machineId, callable $action): mixed
     {
-        $lock = $this->lockFactory->createLock('machine_' . $machineId);
+        $lock = $this->lockFactory->createLock('machine_'.$machineId);
 
         $lock->acquire(true);
 

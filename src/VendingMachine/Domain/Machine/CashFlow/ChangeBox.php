@@ -12,8 +12,9 @@ final readonly class ChangeBox
     private const LOW_CHANGE_THRESHOLD = 20;
 
     private function __construct(
-        private array $coins
-    ) {}
+        private array $coins,
+    ) {
+    }
 
     public static function empty(): self
     {
@@ -22,7 +23,19 @@ final readonly class ChangeBox
 
     public static function load(array $coins): self
     {
-        return new self($coins);
+        $normalized = [];
+
+        foreach ($coins as $value => $qty) {
+            Coin::from($value); // valida moneda
+
+            if ($qty < 0) {
+                throw new InvalidChangeBoxState();
+            }
+
+            $normalized[$value] = $qty;
+        }
+
+        return new self($normalized);
     }
 
     public function coins(): array
@@ -53,9 +66,6 @@ final readonly class ChangeBox
         return array_sum($this->coins);
     }
 
-    /**
-     * @param Coin[] $coins
-     */
     public function addMany(array $coins): self
     {
         $box = $this;
@@ -75,17 +85,15 @@ final readonly class ChangeBox
 
         $coins = $this->coins;
 
-        $coins[$coin->value]--;
-        if ($coins[$coin->value] === 0) {
+        --$coins[$coin->value];
+
+        if (0 === $coins[$coin->value]) {
             unset($coins[$coin->value]);
         }
 
         return new self($coins);
     }
 
-    /**
-     * @param Coin[] $coins
-     */
     public function removeMany(array $coins): self
     {
         $box = $this;
@@ -97,39 +105,19 @@ final readonly class ChangeBox
         return $box;
     }
 
-    /**
-     * @return Coin[]
-     */
     public function withdraw(int $amount): array
     {
-        $result = [];
-
-        $available = $this->coins;
-
-        foreach (Coin::orderedCases() as $coin) {
-            $coinValue = $coin->value;
-
-            while ($amount >= $coinValue && ($available[$coinValue] ?? 0) > 0) {
-                $amount -= $coinValue;
-                $available[$coinValue]--;
-
-                $result[] = $coin;
-            }
-        }
-
-        if ($amount > 0) {
-            throw new InsufficientChangeException();
-        }
-
-        return $result;
+        return $this->calculateWithdraw($amount, $this->coins);
     }
 
     public function refill(Coin $coin, int $quantity): ChangeBoxRefillResult
     {
         $freeCapacity = max(0, self::MAX_COINS - $this->totalCoins());
         $accepted = min($quantity, $freeCapacity);
+
         $coins = $this->coins;
         $coins[$coin->value] = ($coins[$coin->value] ?? 0) + $accepted;
+
         $newBox = new self($coins);
 
         return new ChangeBoxRefillResult(
@@ -148,5 +136,36 @@ final readonly class ChangeBox
     public function needChange(Coin $coin): bool
     {
         return $this->quantityOf($coin) <= self::LOW_CHANGE_THRESHOLD;
+    }
+
+    /**
+     * @param array<int,int> $coins
+     *
+     * @return Coin[]
+     */
+    private function calculateWithdraw(int $amount, array $coins): array
+    {
+        $result = [];
+
+        $available = $coins;
+
+        foreach (Coin::orderedCases() as $coin) {
+            $coinValue = $coin->value;
+
+            while (
+                $amount >= $coinValue
+                && ($available[$coinValue] ?? 0) > 0
+            ) {
+                $amount -= $coinValue;
+                --$available[$coinValue];
+                $result[] = $coin;
+            }
+        }
+
+        if ($amount > 0) {
+            throw new InsufficientChangeException();
+        }
+
+        return $result;
     }
 }

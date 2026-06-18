@@ -14,18 +14,19 @@ final class InsertCoinUseCase
     public function __construct(
         private VendingMachineRepositoryInterface $repository,
         private LockFactory $lockFactory,
-    ) {}
+    ) {
+    }
 
     public function execute(InsertCoinCommand $command): void
     {
-        $lock = $this->lockFactory->createLock('machine_' . $command->machineId);
+        $lock = $this->lockFactory->createLock('machine_'.$command->machineId);
         $lock->acquire(true);
 
         try {
             $machine = $this->repository->get($command->machineId);
 
             $coin = Coin::tryFrom($command->coin);
-            if ($coin === null) {
+            if (null === $coin) {
                 throw new InvalidCoinException();
             }
 

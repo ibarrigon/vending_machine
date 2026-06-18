@@ -9,5 +9,6 @@ use App\VendingMachine\Domain\VendingMachine;
 interface VendingMachineRepositoryInterface
 {
     public function get(int $id): VendingMachine;
+
     public function save(VendingMachine $machine): void;
 }

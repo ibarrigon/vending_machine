@@ -10,6 +10,6 @@ use Doctrine\ORM\Mapping as ORM;
 class VendingMachineEntity
 {
     #[ORM\Version]
-    #[ORM\Column(type: "integer")]
+    #[ORM\Column(type: 'integer')]
     private int $version;
 }

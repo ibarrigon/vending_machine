@@ -11,5 +11,6 @@ final readonly class ChangeBoxRefillResult
         public int $accepted,
         public int $rejected,
         public int $currentQuantity,
-    ) {}
+    ) {
+    }
 }

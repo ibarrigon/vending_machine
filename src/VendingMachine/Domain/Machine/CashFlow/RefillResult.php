@@ -13,5 +13,6 @@ final readonly class RefillResult
         public int $accepted,
         public int $rejected,
         public int $currentQuantity,
-    ) {}
+    ) {
+    }
 }

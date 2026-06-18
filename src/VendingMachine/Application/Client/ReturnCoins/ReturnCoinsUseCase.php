@@ -12,11 +12,12 @@ final class ReturnCoinsUseCase
     public function __construct(
         private VendingMachineRepositoryInterface $repository,
         private LockFactory $lockFactory,
-    ) {}
+    ) {
+    }
 
     public function execute(ReturnCoinsCommand $command): array
     {
-        $lock = $this->lockFactory->createLock('machine_' . $command->machineId);
+        $lock = $this->lockFactory->createLock('machine_'.$command->machineId);
         $lock->acquire(true);
 
         try {

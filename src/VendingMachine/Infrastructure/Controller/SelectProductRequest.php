@@ -12,5 +12,6 @@ final readonly class SelectProductRequest
         #[Assert\NotBlank]
         #[Assert\Choice(['GET-WATER', 'GET-JUICE', 'GET-SODA'])]
         public string $product,
-    ) {}
+    ) {
+    }
 }

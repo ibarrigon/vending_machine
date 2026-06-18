@@ -24,7 +24,8 @@ final class VendingMachineController extends AbstractController
         private InsertCoinUseCase $insertCoin,
         private SelectProductUseCase $selectProduct,
         private ReturnCoinsUseCase $returnCoins,
-    ) {}
+    ) {
+    }
 
     #[Route('/machine/{id}/coin', methods: ['POST'])]
     #[OA\Post(
@@ -71,7 +72,7 @@ final class VendingMachineController extends AbstractController
     public function insertCoin(
         int $id,
         #[MapRequestPayload]
-        InsertCoinRequest $request
+        InsertCoinRequest $request,
     ): JsonResponse {
         $this->insertCoin->execute(
             new InsertCoinCommand(
@@ -138,7 +139,7 @@ final class VendingMachineController extends AbstractController
     public function select(
         int $id,
         #[MapRequestPayload]
-        SelectProductRequest $request
+        SelectProductRequest $request,
     ): JsonResponse {
         $result = $this->selectProduct->execute(
             new SelectProductCommand(

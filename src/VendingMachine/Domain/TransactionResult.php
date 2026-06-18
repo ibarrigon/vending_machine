@@ -10,6 +10,7 @@ final class TransactionResult
 {
     public function __construct(
         public ProductType $product,
-        public array $change
-    ) {}
+        public array $change,
+    ) {
+    }
 }

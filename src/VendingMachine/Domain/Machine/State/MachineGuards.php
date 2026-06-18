@@ -8,12 +8,12 @@ final class MachineGuards
 {
     public static function canInsertCoin(MachineState $state): bool
     {
-        return $state !== MachineState::OUT_OF_SERVICE;
+        return MachineState::OUT_OF_SERVICE !== $state;
     }
 
     public static function canSelectProduct(MachineState $state): bool
     {
-        return $state === MachineState::HAS_INSERTED_COINS;
+        return MachineState::HAS_INSERTED_COINS === $state;
     }
 
     public static function canReturnCoins(MachineState $state): bool

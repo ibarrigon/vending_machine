@@ -7,7 +7,7 @@ namespace App\VendingMachine\Infrastructure\Persistence\Doctrine\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
-#[ORM\Table(name: "vending_machine")]
+#[ORM\Table(name: 'vending_machine')]
 class VendingMachineRecord
 {
     #[ORM\Id]
@@ -15,16 +15,16 @@ class VendingMachineRecord
     #[ORM\Column]
     private int $id;
 
-    #[ORM\Column(type: "json")]
+    #[ORM\Column(type: 'json')]
     private array $slots = [];
 
-    #[ORM\Column(type: "json")]
+    #[ORM\Column(type: 'json')]
     private array $changeInventory = [];
 
-    #[ORM\Column(type: "json")]
+    #[ORM\Column(type: 'json')]
     private array $insertedCoins = [];
 
-    #[ORM\Column(type: "datetime_immutable")]
+    #[ORM\Column(type: 'datetime_immutable')]
     private \DateTimeImmutable $updatedAt;
 
     public function setSlots(array $slots): void

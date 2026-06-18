@@ -15,8 +15,9 @@ final class DoctrineVendingMachineRepository implements VendingMachineRepository
 {
     public function __construct(
         private EntityManagerInterface $em,
-        private VendingMachineMapper $mapper
-    ) {}
+        private VendingMachineMapper $mapper,
+    ) {
+    }
 
     public function get(int $id): VendingMachine
     {

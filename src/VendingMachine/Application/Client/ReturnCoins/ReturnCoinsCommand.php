@@ -8,5 +8,6 @@ final class ReturnCoinsCommand
 {
     public function __construct(
         public readonly int $machineId,
-    ) {}
+    ) {
+    }
 }

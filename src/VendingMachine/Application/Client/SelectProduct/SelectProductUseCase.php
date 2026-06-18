@@ -15,17 +15,18 @@ final class SelectProductUseCase
     public function __construct(
         private VendingMachineRepositoryInterface $repository,
         private LockFactory $lockFactory,
-    ) {}
+    ) {
+    }
 
     public function execute(SelectProductCommand $command): TransactionResultDTO
     {
-        $lock = $this->lockFactory->createLock('machine_' . $command->machineId);
+        $lock = $this->lockFactory->createLock('machine_'.$command->machineId);
         $lock->acquire(true);
 
         try {
             $machine = $this->repository->get($command->machineId);
             $product = ProductType::fromSelector($command->product);
-            if ($product === null) {
+            if (null === $product) {
                 throw new InvalidProductException();
             }
 

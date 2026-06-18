@@ -15,7 +15,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 #[AsCommand(name: 'vending:select')]
 final class SelectProductCommandConsole extends Command
 {
-    public function __construct(private SelectProductUseCase $handler) 
+    public function __construct(private SelectProductUseCase $handler)
     {
         parent::__construct();
     }

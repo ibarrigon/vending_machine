@@ -15,7 +15,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 #[AsCommand(name: 'vending:return')]
 final class ReturnCoinsCommandConsole extends Command
 {
-    public function __construct(private ReturnCoinsUseCase $handler) 
+    public function __construct(private ReturnCoinsUseCase $handler)
     {
         parent::__construct();
     }
