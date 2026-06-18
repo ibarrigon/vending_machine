@@ -1,0 +1,18 @@
+doctrine:
+    dbal:
+        url: '%env(resolve:DATABASE_URL)%'
+        server_version: '8.4'
+        charset: utf8mb4
+
+    orm:
+        auto_mapping: false
+
+        naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
+
+        mappings:
+            VendingMachine:
+                is_bundle: false
+                type: attribute
+                dir: '%kernel.project_dir%/src/VendingMachine/Infrastructure/Persistence/Doctrine/Entity'
+                prefix: 'App\VendingMachine\Infrastructure\Persistence\Doctrine\Entity'
+                alias: VendingMachine

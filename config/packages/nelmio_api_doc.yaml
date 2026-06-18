@@ -1,0 +1,11 @@
+nelmio_api_doc:
+    documentation:
+        info:
+            title: Vending Machine API
+            description: Vending Machine Technical Assessment
+            version: 1.0.0
+
+    areas:
+        default:
+            path_patterns:
+                - ^/api
