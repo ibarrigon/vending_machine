@@ -1,86 +1,84 @@
 # Architecture
 
-Sorry, here I put some effort to explain where o how I decided what to do or not, but its to short for really expose everything
-that comes while I was evolving (like a pokemon, sorry for the joke) the code.
+Sorry, I put some effort here into explaining why and how I decided what to do (or not do), but it's too short to really explain everything that came up while I was evolving the code (like a Pokémon, sorry for the joke).
 
-I really don't do the commits in the good order... Do You know when the time was 3 hours of "work" and for you only was 5 minutos?
+I really didn't make the commits in the proper order... Do you know when something takes 3 hours of work, but it feels like only 5 minutes to you?
 
-I only can say that the reference is a book (it's a novel) called "The Blue Nowhere" or in spanish "La estancia azul".
+I can only say that one of my references is a novel called "The Blue Nowhere" or, in Spanish, "La estancia azul".
 
-## Previously decisions
+## Design Decisions
 
-I decided to use PHP, Symfony and MySQL. In my opinion, maybe the data base was not really needed, but I included one to
-trazability and to generate consistent status of the machine.
+I decided to use PHP, Symfony and MySQL. In my opinion, the database was probably not really needed, but I included one for traceability and to maintain a consistent machine state.
 
-You can Shut down (not in reality) and when comes up, you have the last inventory, the last change inside the machine and
-the coins the last client put (I know that vending machine lost it, but I make concesion there for the client)
+You can shut the machine down (not in reality), and when it comes back up, you still have the last inventory, the last amount of change inside the machine, and even the coins inserted by the last client. I know that a real vending machine would probably return them, but I made a concession there for the client.
 
-I don't put any security like ROLES or something similar, but I understand an API with to user types, required it. For example,
-one client dont need to know there's admin part in the API (in this case, Tecnician operations)
+I didn't implement any security such as roles or anything similar, but I understand that an API with two user types would require it. For example, a client doesn't need to know there is an admin area in the API (in this case, technician operations).
 
-I use doctrine to read and save in BD, but I don't like migrations. Maybe you can have everything versioned, but I prefer to
-evolve the BD manually, like you do if the DB Administrator is another division of the company, creating an issue with the alter.
+I use Doctrine to read from and save to the database, but I don't like migrations. Maybe having everything versioned is better, but I prefer to evolve the database manually, just as you would if the Database Administration team were a different division of the company and you had to create a ticket for every schema change.
 
-Obviously, I can work with migrations too but here I prefer to be an "old school man".
+Obviously, I can work with migrations too, but here I preferred to be a bit old-school.
 
-Everybody knows that "floating point" it's a kick in the ass, first thing I do, its use cents. Then I can disregard any problem 
-about it. Ah! then, I only need to make decimals in the output.
+Everybody knows that floating-point arithmetic is a pain. The first thing I did was use cents. That way I can completely avoid those issues.
+
+Ah! Then I only need to convert values to decimals in the output.
 
 ## Domain
 
-Business model. Here is everything our business knows, using its own language.
-There's one thing to talk about. This system allows to create a lot of machines, all with they status. I don't read anything
-about this, but I do it to make it really extensible, to make possible a vending bank.
+Business model. This is where everything the business knows lives, using its own language.
+
+There's one thing worth mentioning. This system allows the creation of multiple machines, each with its own state. I didn't read anything in the statement about this, but I implemented it to make the solution more extensible and to make something like a vending machine fleet possible.
 
 ### VendingMachine
 
-This is the core of the Domain. It provide the required funcionality with business rules, or, in Hexagonal architecture, Domain.
+This is the core of the Domain. It provides the required functionality and business rules or, in Hexagonal Architecture terms, the Domain itself.
 
-Like the statement describe, you have 3 available actions for the Client:
+As described in the statement, there are three available actions for the client:
 
-1. __Insert coin__: Code to accept coins from client
-2. __Return coins__: The client gets his coins
-3. __Select product__: Get the product, the change and remaining balance
+1. **Insert coin**: Accept coins from the client.
+2. **Return coins**: The client gets their coins back.
+3. **Select product**: Deliver the product, return any change, and calculate the remaining balance.
 
-And there is 3 available actions for the Tecnician:
+And there are three available actions for the technician:
 
-1. __Refill slot__: Fill the slot
-2. __Refill coins__: Add coins for change
-3. __Retire coins__: Remove exceded change
+1. **Refill slot**: Fill a slot with products.
+2. **Refill coins**: Add coins for change.
+3. **Withdraw coins**: Remove excess change.
 
 ### Machine
 
-This folder contains everithing is insede the machine:
+This folder contains everything inside the machine:
 
-1. __Slots__: Where the products are located
-2. __CoinMachine__: Its the "black" box inside the machine that controls everything about the coins.
+1. **Slots**: Where the products are stored.
+2. **CoinMachine**: The "black box" inside the machine that controls everything related to coins.
 
 ## Application
 
-Interaction, provide access to Domain from the "interface", "console", "api", ... Here you can find UseCases.
-In this folder you can see two subfolders with the differents roles. Client and Tecnician.
+Interaction layer. It provides access to the Domain from the interface, console, API, etc. Here you can find the Use Cases.
+
+In this folder you can see two subfolders representing the different roles: Client and Technician.
 
 ### UseCase
 
-Like in Domain, the operations we can do. They are short classes becouse it's really a bypass from external input
-(Infrastructure or ports) to internal (Domain). I think they don't really need a lot of work, only a repository (obviously an
-interface), call a domain function (or generate objects, for example) and something to reesponse.
+As in the Domain, this layer contains the operations we can perform. These classes are intentionally small because they mainly act as a bridge between external input (Infrastructure or Ports) and internal logic (Domain).
+
+I don't think they need much work: obtain a repository (through an interface), call a domain operation (or create domain objects when needed), and return a response.
 
 ### Command
 
-Initially there was only one UseCase and with the command we can provide access to Domain operation inside VendingMachine,
-but finally, everithings is more accurated (and maintainable) if we have differents UseCase.
+Initially there was only one Use Case, and commands were used to provide access to Domain operations inside VendingMachine.
 
-Command is another name for Request. Every command contains the required data for the UseCase
+However, the solution became cleaner and more maintainable once I created different Use Cases.
+
+A Command is simply another name for a Request. Every command contains the data required by a Use Case.
 
 ## Infrastructure
 
-Well, here we have the concrete versions of software, the exact BD, ORM, etc etc. I dont think its important. This part is what,
-we can say, need to stablish cooperation with DevOps division, or when we need to make request to the System Deparment.
+Well, here we have the concrete implementation details: the database, the ORM, and so on. I don't think this part is especially interesting.
 
-We can say this is the "metal" part of the project, and one que can change like a puzzle.
+This is the layer where we need to establish cooperation with the DevOps team, or where we need to make requests to the Systems Department.
 
-For example, now we have MySql, but maybe with MariaDB it's enought, or maybe we prefer Postgress... or maybe we have a RISC
-and we can connect with this really hardcore system (I know becouse I do it).
+We can say this is the "metal" part of the project, and one that can be replaced like puzzle pieces.
 
-Ah! here is where docker-compose finds his "alma mater" 😅
+For example, today we use MySQL, but maybe MariaDB would be enough, or perhaps PostgreSQL would be preferred... or maybe we have an AS/400 and can connect to that hardcore system instead (I know because I've done it).
+
+Ah! This is also where docker-compose finds its alma mater 😅
