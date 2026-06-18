@@ -7,6 +7,7 @@ namespace App\VendingMachine\Domain;
 use App\VendingMachine\Domain\Catalog\ProductType;
 use App\VendingMachine\Domain\Coin\Coin;
 use App\VendingMachine\Domain\Inventory\OutOfStockException;
+use App\VendingMachine\Domain\Inventory\Slot;
 use App\VendingMachine\Domain\Machine\CashFlow\CoinMachine;
 use App\VendingMachine\Domain\Machine\CashFlow\RefillResult;
 use App\VendingMachine\Domain\Machine\State\InvalidMachineStateException;
@@ -27,6 +28,9 @@ final class VendingMachine
     ) {
     }
 
+    /**
+     * @param array<string, Slot> $slots
+     */
     public static function load(
         int $id,
         array $slots,
@@ -58,13 +62,13 @@ final class VendingMachine
         $this->state = MachineTransitionTable::eventTransition($this->state, MachineEvent::SELECT_PRODUCT);
 
         try {
-            $slot = $this->slots[$type->value];
+            $slot = $this->slotByProduct($type);
 
             if (!$slot->canDispense()) {
                 throw new OutOfStockException();
             }
 
-            $change = $this->coinMachine->purchase($slot->product()->price()->value());
+            $change = $this->coinMachine->purchase($slot->product()->price);
 
             $slot->dispense();
 
@@ -79,6 +83,9 @@ final class VendingMachine
         }
     }
 
+    /**
+     * @return Coin[]
+     */
     public function returnCoins(): array
     {
         if (!MachineGuards::canReturnCoins($this->state)) {
@@ -92,6 +99,9 @@ final class VendingMachine
         return $coins;
     }
 
+    /**
+     * @return array<string, Slot>
+     */
     public function slots(): array
     {
         return $this->slots;
@@ -114,7 +124,7 @@ final class VendingMachine
 
     public function refillSlot(ProductType $product): void
     {
-        $this->slots[$product->value]->refill();
+        $this->slotByProduct($product)->refill();
     }
 
     public function refillChange(Coin $coin, int $quantity): RefillResult
@@ -140,5 +150,10 @@ final class VendingMachine
     public function isInMaintenance(): bool
     {
         return MachineState::IN_MAINTENANCE === $this->state;
+    }
+
+    private function slotByProduct(ProductType $product): Slot
+    {
+        return $this->slots[$product->value];
     }
 }

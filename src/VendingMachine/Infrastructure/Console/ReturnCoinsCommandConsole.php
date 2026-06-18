@@ -15,7 +15,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 #[AsCommand(name: 'vending:return')]
 final class ReturnCoinsCommandConsole extends Command
 {
-    public function __construct(private ReturnCoinsUseCase $handler)
+    public function __construct(private ReturnCoinsUseCase $returnCoint)
     {
         parent::__construct();
     }
@@ -27,7 +27,7 @@ final class ReturnCoinsCommandConsole extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $coins = ($this->handler)(
+        $coins = $this->returnCoint->execute(
             new ReturnCoinsCommand(machineId: (int) $input->getArgument('machineId')),
         );
 

@@ -15,7 +15,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 #[AsCommand(name: 'vending:coin')]
 final class InsertCoinCommandConsole extends Command
 {
-    public function __construct(private InsertCoinUseCase $handler)
+    public function __construct(private InsertCoinUseCase $insertCoin)
     {
         parent::__construct();
     }
@@ -29,7 +29,7 @@ final class InsertCoinCommandConsole extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        ($this->handler)(
+        $this->insertCoin->execute(
             new InsertCoinCommand(
                 machineId: (int) $input->getArgument('machineId'),
                 coin: (int) $input->getArgument('coin'),

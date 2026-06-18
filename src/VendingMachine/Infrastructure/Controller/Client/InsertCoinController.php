@@ -18,7 +18,8 @@ final class InsertCoinController extends AbstractController
 {
     public function __construct(
         private InsertCoinUseCase $insertCoin,
-    ) {}
+    ) {
+    }
 
     #[Route('/machine/{id}/coin', methods: ['POST'])]
     #[OA\Post(

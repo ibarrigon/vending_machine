@@ -1,10 +1,9 @@
 <?php
 
-declare(strict_types= 1);
+declare(strict_types=1);
 
 namespace App\Tests\Unit\VendingMachine\Domain;
 
-use App\Tests\Unit\VendingMachine\Domain\VendingMachineFactory;
 use App\VendingMachine\Domain\Catalog\ProductType;
 use App\VendingMachine\Domain\Coin\Coin;
 use App\VendingMachine\Domain\Machine\State\InvalidMachineStateException;

@@ -15,7 +15,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 #[AsCommand(name: 'vending:select')]
 final class SelectProductCommandConsole extends Command
 {
-    public function __construct(private SelectProductUseCase $handler)
+    public function __construct(private SelectProductUseCase $selectProduct)
     {
         parent::__construct();
     }
@@ -29,7 +29,7 @@ final class SelectProductCommandConsole extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $result = ($this->handler)(
+        $result = $this->selectProduct->execute(
             new SelectProductCommand(
                 machineId: (int) $input->getArgument('machineId'),
                 product: $input->getArgument('product'),

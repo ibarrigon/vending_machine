@@ -17,7 +17,8 @@ final class ReturnCoinsController extends AbstractController
 {
     public function __construct(
         private ReturnCoinsUseCase $returnCoins,
-    ) {}
+    ) {
+    }
 
     #[Route('/machine/{id}/return', methods: ['POST'])]
     #[OA\Post(
