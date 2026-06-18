@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\VendingMachine\Infrastructure\Controller;
+namespace App\VendingMachine\Infrastructure\Controller\Client;
 
 use Symfony\Component\Validator\Constraints as Assert;
 

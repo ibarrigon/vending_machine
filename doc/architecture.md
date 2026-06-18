@@ -23,6 +23,9 @@ evolve the BD manually, like you do if the DB Administrator is another division 
 
 Obviously, I can work with migrations too but here I prefer to be an "old school man".
 
+Everybody knows that "floating point" it's a kick in the ass, first thing I do, its use cents. Then I can disregard any problem 
+about it. Ah! then, I only need to make decimals in the output.
+
 ## Domain
 
 Business model. Here is everything our business knows, using its own language.
