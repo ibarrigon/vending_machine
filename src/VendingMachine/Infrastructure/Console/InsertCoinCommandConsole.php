@@ -1,0 +1,43 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\VendingMachine\Infrastructure\Console;
+
+use App\VendingMachine\Application\Client\InsertCoin\InsertCoinCommand;
+use App\VendingMachine\Application\Client\InsertCoin\InsertCoinUseCase;
+use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+
+#[AsCommand(name: 'vending:coin')]
+final class InsertCoinCommandConsole extends Command
+{
+    public function __construct(private InsertCoinUseCase $handler)
+    {
+        parent::__construct();
+    }
+
+    protected function configure(): void
+    {
+        $this
+            ->addArgument('machineId', InputArgument::REQUIRED)
+            ->addArgument('coin', InputArgument::REQUIRED);
+    }
+
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
+        ($this->handler)(
+            new InsertCoinCommand(
+                machineId: (int) $input->getArgument('machineId'),
+                coin: (int) $input->getArgument('coin'),
+            )
+        );
+
+        $output->writeln('Coin inserted');
+
+        return Command::SUCCESS;
+    }
+}
