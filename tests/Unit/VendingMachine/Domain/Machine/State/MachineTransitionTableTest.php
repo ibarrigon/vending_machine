@@ -19,36 +19,30 @@ final class MachineTransitionTableTest extends TestCase
             MachineEvent::INSERT_COIN,
         );
 
-        $this->assertSame(
-            MachineState::HAS_INSERTED_COINS,
-            $state
-        );
+        $this->assertSame(MachineState::HAS_INSERTED_COINS, $state);
     }
 
-    public function testHasInsertedCoinsToDispensing(): void
+    public function testHasCoinsToDispensing(): void
     {
         $state = MachineTransitionTable::eventTransition(
             MachineState::HAS_INSERTED_COINS,
             MachineEvent::SELECT_PRODUCT,
         );
 
-        $this->assertSame(
-            MachineState::DISPENSING,
-            $state
-        );
+        $this->assertSame(MachineState::DISPENSING, $state);
     }
 
-    public function testDispensingSuccessReturnsToIdle(): void
+    public function testSuccessReturnsToIdle(): void
     {
-        $state = MachineTransitionTable::transition(MachineState::DISPENSING, MachineOutcome::SUCCESS);
-
-        $this->assertSame(
-            MachineState::IDLE,
-            $state
+        $state = MachineTransitionTable::transition(
+            MachineState::DISPENSING,
+            MachineOutcome::SUCCESS,
         );
+
+        $this->assertSame(MachineState::IDLE, $state);
     }
 
-    public function testDispensingFailureReturnsToHasInsertedCoins(): void
+    public function testFailureReturnsToHasCoins(): void
     {
         $state = MachineTransitionTable::transition(
             MachineState::DISPENSING,

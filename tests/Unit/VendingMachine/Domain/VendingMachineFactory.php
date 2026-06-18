@@ -33,6 +33,9 @@ final class VendingMachineFactory
         );
     }
 
+    /**
+     * @return array<string, Slot>
+     */
     private static function slot(ProductType $product, int $amount): array
     {
         return [
@@ -40,6 +43,9 @@ final class VendingMachineFactory
         ];
     }
 
+    /**
+     * @return array<string, Slot>
+     */
     private static function defaultSlots(): array
     {
         return [
@@ -49,6 +55,9 @@ final class VendingMachineFactory
         ];
     }
 
+    /**
+     * @param array<int, int> $change
+     */
     public static function withChange(array $change): VendingMachine
     {
         $box = ChangeBox::empty();

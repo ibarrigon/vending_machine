@@ -38,8 +38,6 @@ final class DoctrineVendingMachineRepository implements VendingMachineRepository
 
         $this->mapper->hydrateRecord($machine, $record);
 
-        $record->setUpdatedAt(new \DateTimeImmutable());
-
         $this->em->persist($record);
         $this->em->flush();
     }

@@ -45,6 +45,11 @@ final readonly class VendingMachineMapper
         );
     }
 
+    /**
+     * @param array<int, array{product: string, price: int, quantity: int}> $slots
+     *
+     * @return list<Slot>
+     */
     private function mapSlotsToDomain(array $slots): array
     {
         return array_map(
@@ -59,6 +64,11 @@ final readonly class VendingMachineMapper
         );
     }
 
+    /**
+     * @param list<Slot> $slots
+     *
+     * @return list<array{product: string, price: int, quantity: int}>
+     */
     private function mapSlotsToPersistence(array $slots): array
     {
         return array_map(
@@ -71,11 +81,17 @@ final readonly class VendingMachineMapper
         );
     }
 
+    /**
+     * @param array<int, int> $data
+     */
     private function mapChangeToDomain(array $data): ChangeBox
     {
         return ChangeBox::load($data);
     }
 
+    /**
+     * @param array<int, int> $data
+     */
     private function mapInsertedCoinsToDomain(array $data): InsertedCoins
     {
         return InsertedCoins::load(
@@ -86,6 +102,9 @@ final readonly class VendingMachineMapper
         );
     }
 
+    /**
+     * @return list<int>
+     */
     private function mapInsertedCoinsToPersistence(InsertedCoins $coins): array
     {
         return array_map(
@@ -94,6 +113,9 @@ final readonly class VendingMachineMapper
         );
     }
 
+    /**
+     * @return array<int, int>
+     */
     private function mapChangeToPersistence(ChangeBox $changeBox): array
     {
         return $changeBox->coins();

@@ -13,7 +13,7 @@ use App\VendingMachine\Application\Client\SelectProduct\SelectProductUseCase;
 use OpenApi\Attributes as OA;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -81,7 +81,7 @@ final class VendingMachineController extends AbstractController
             ),
         );
 
-        return new JsonResponse(['status' => Request::HTTP_OK]);
+        return new JsonResponse(['status' => 'ok'], Response::HTTP_OK);
     }
 
     #[Route('/machine/{id}/select', methods: ['POST'])]
@@ -152,7 +152,7 @@ final class VendingMachineController extends AbstractController
             'product' => $result->product,
             'change' => $result->change,
             'remain_cash' => 0,
-        ]);
+        ], Response::HTTP_OK);
     }
 
     #[Route('/machine/{id}/return', methods: ['POST'])]
@@ -186,6 +186,6 @@ final class VendingMachineController extends AbstractController
     {
         $coins = $this->returnCoins->execute(new ReturnCoinsCommand($id));
 
-        return new JsonResponse(['coins' => $coins]);
+        return new JsonResponse(['coins' => $coins], Response::HTTP_OK);
     }
 }

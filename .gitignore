@@ -23,4 +23,3 @@ phpstan.neon
 /.phpunit.cache/
 ###< phpunit/phpunit ###
 .phpunit.result.cache
-phpstan.dist.neon

@@ -8,6 +8,7 @@ use App\Tests\Unit\VendingMachine\Domain\VendingMachineFactory;
 use App\VendingMachine\Domain\Catalog\ProductType;
 use App\VendingMachine\Domain\Coin\Coin;
 use App\VendingMachine\Domain\Machine\CashFlow\InsufficientFundsException;
+use App\VendingMachine\Domain\Machine\State\MachineState;
 use PHPUnit\Framework\TestCase;
 
 final class VendingMachineFlowTest extends TestCase
@@ -22,6 +23,7 @@ final class VendingMachineFlowTest extends TestCase
 
         $this->assertSame(ProductType::SODA, $result->product);
         $this->assertSame([], $result->change);
+        $this->assertSame(MachineState::IDLE, $machine->state());
     }
 
     public function testUserReceivesChangeWhenOverpaying(): void
@@ -33,17 +35,7 @@ final class VendingMachineFlowTest extends TestCase
         $result = $machine->selectProduct(ProductType::WATER);
 
         $this->assertNotEmpty($result->change);
-    }
-
-    public function testUserGetsExceptionWhenInsufficientFunds(): void
-    {
-        $this->expectException(InsufficientFundsException::class);
-
-        $machine = VendingMachineFactory::create();
-
-        $machine->insertCoin(Coin::TWENTY_FIVE_CENTS);
-
-        $machine->selectProduct(ProductType::SODA);
+        $this->assertSame(MachineState::IDLE, $machine->state());
     }
 
     public function testUserCanReturnCoins(): void
@@ -56,5 +48,17 @@ final class VendingMachineFlowTest extends TestCase
         $coins = $machine->returnCoins();
 
         $this->assertCount(2, $coins);
+        $this->assertSame(MachineState::IDLE, $machine->state());
+    }
+
+    public function testUserGetsExceptionWhenInsufficientFunds(): void
+    {
+        $this->expectException(InsufficientFundsException::class);
+
+        $machine = VendingMachineFactory::create();
+
+        $machine->insertCoin(Coin::TWENTY_FIVE_CENTS);
+
+        $machine->selectProduct(ProductType::SODA);
     }
 }

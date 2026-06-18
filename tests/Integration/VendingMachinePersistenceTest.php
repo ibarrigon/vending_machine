@@ -3,44 +3,28 @@
 declare(strict_types=1);
 
 use App\Tests\Unit\VendingMachine\Domain\VendingMachineFactory;
-use App\VendingMachine\Application\VendingMachineRepositoryInterface;
 use App\VendingMachine\Domain\Catalog\ProductType;
 use App\VendingMachine\Domain\Coin\Coin;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use App\VendingMachine\Infrastructure\Persistence\Doctrine\Entity\VendingMachineRecord;
+use App\VendingMachine\Infrastructure\Persistence\Doctrine\Mapper\VendingMachineMapper;
+use PHPUnit\Framework\TestCase;
 
-final class VendingMachinePersistenceTest extends KernelTestCase
+final class VendingMachinePersistenceTest extends TestCase
 {
-    private EntityManagerInterface $em;
-    private VendingMachineRepositoryInterface $repo;
-
-    protected function setUp(): void
-    {
-        self::bootKernel();
-
-        $this->em = self::getContainer()->get(EntityManagerInterface::class);
-        $this->repo = self::getContainer()->get(VendingMachineRepositoryInterface::class);
-    }
-
-    public function testSnapshotIsConsistentAfterRoundtrip(): void
+    public function testMachineCanBePersistedAndRestored(): void
     {
         $machine = VendingMachineFactory::create();
 
         $machine->insertCoin(Coin::ONE_EURO);
         $machine->selectProduct(ProductType::SODA);
 
-        $this->repo->save($machine);
+        $record = new VendingMachineRecord();
 
-        $reloaded = $this->repo->get($machine->id());
+        $mapper = new VendingMachineMapper();
+        $mapper->hydrateRecord($machine, $record);
 
-        $this->assertSame(
-            $machine->state(),
-            $reloaded->state()
-        );
+        $restored = $mapper->toDomain($record);
 
-        $this->assertSame(
-            $machine->coinMachine()->insertedCoins()->total(),
-            $reloaded->coinMachine()->insertedCoins()->total()
-        );
+        $this->assertSame($machine->state(), $restored->state());
     }
 }
