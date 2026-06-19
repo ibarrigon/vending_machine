@@ -113,14 +113,15 @@ final class CoinMachineTest extends TestCase
         $cases = Coin::cases();
 
         for ($i = 0; $i < 50; ++$i) {
-            $sequence = array_values(
-                array_map(
-                    static fn(): Coin => $cases[array_rand($cases)],
-                    range(1, random_int(1, 10))
-                )
-            );
+            $sequence = [];
 
-            /** @var list<Coin> $sequence */
+            $length = random_int(1, 10);
+
+            for ($j = 0; $j < $length; ++$j) {
+                $sequence[] = $cases[array_rand($cases)];
+            }
+
+            /* @var list<Coin> $sequence */
             yield [$sequence, random_int(0, 300)];
         }
     }
@@ -132,7 +133,7 @@ final class CoinMachineTest extends TestCase
     {
         return array_reduce(
             $coins,
-            static fn(int $carry, Coin $coin): int => $carry + $coin->value,
+            static fn (int $carry, Coin $coin): int => $carry + $coin->value,
             0
         );
     }

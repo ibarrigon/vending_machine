@@ -39,7 +39,7 @@ final class CoinMachinePropertyTest extends TestCase
 
             $this->assertSame($initialValue, $price + $changeValue + $remain);
         } catch (InsufficientFundsException) {
-            $this->assertTrue(true);
+            $this->addToAssertionCount(1);
         }
     }
 
@@ -63,7 +63,7 @@ final class CoinMachinePropertyTest extends TestCase
 
             $this->assertEquals($r1, $r2);
         } catch (InsufficientFundsException) {
-            $this->assertTrue(true);
+            $this->addToAssertionCount(1);
         }
     }
 
@@ -75,12 +75,15 @@ final class CoinMachinePropertyTest extends TestCase
         $cases = Coin::cases();
 
         for ($i = 0; $i < 50; ++$i) {
-            /** @var list<Coin> $sequence */
-            $sequence = array_map(
-                static fn (): Coin => $cases[array_rand($cases)],
-                range(1, random_int(1, 10))
-            );
+            $sequence = [];
 
+            $length = random_int(1, 10);
+
+            for ($j = 0; $j < $length; ++$j) {
+                $sequence[] = $cases[array_rand($cases)];
+            }
+
+            /* @var list<Coin> $sequence */
             yield [$sequence, random_int(0, 300)];
         }
     }
