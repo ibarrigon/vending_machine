@@ -6,3 +6,4 @@
 2. [Statement](./doc/statement.md)
 3. [How to run](./doc/run.md)
 4. [Architecture](./doc/architecture.md)
+5. [Test](./doc/test.md)

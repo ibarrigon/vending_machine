@@ -12,3 +12,11 @@ services:
       APP_ENV: test
       DATABASE_URL: mysql://vending:vending@mysql_test:3306/vending_machine_test
     command: vendor/bin/phpunit
+
+  mysql_test:
+    image: mysql:8
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: vending_machine_test
+    volumes:
+      - ./docker/mysql/init-test.sql:/docker-entrypoint-initdb.d/init.sql

@@ -42,13 +42,7 @@ This executes all tests, but maybe you do not want to run all of them. Perhaps y
 make test-unit
 ```
 
-I have mixed feelings about this type of test. In this case, it is good enough, but in general I usually prefer what I call component tests.
-
-For example, we have a `VendingMachine`, right? This machine contains a `CoinMachine`. If the `CoinMachine` never works independently from the `VendingMachine`, then why focus on unit tests? Would it not be more useful to test how both parts interact as a complete component?
-
-However, that is not the case here. The `CoinMachine` is isolated enough that testing it separately does not require much effort, so I am completely fine with unit tests in this situation.
-
-I am not sure if I explained myself well, but that is my personal opinion. Of course, when working in a team, I follow the rules and conventions agreed upon by everyone.
+What you see it's what you get
 
 I also added other testing commands:
 

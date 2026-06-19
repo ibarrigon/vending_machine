@@ -1,3 +1,5 @@
+CREATE DATABASE IF NOT EXISTS vending_machine;
+
 USE vending_machine;
 
 CREATE TABLE IF NOT EXISTS `vending_machine` (
