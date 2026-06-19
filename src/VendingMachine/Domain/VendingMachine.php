@@ -6,10 +6,11 @@ namespace App\VendingMachine\Domain;
 
 use App\VendingMachine\Domain\Catalog\ProductType;
 use App\VendingMachine\Domain\Coin\Coin;
-use App\VendingMachine\Domain\Inventory\OutOfStockException;
-use App\VendingMachine\Domain\Inventory\Slot;
 use App\VendingMachine\Domain\Machine\CashFlow\CoinMachine;
 use App\VendingMachine\Domain\Machine\CashFlow\RefillResult;
+use App\VendingMachine\Domain\Machine\Configuration;
+use App\VendingMachine\Domain\Machine\Slot\OutOfStockException;
+use App\VendingMachine\Domain\Machine\Slot\SlotState;
 use App\VendingMachine\Domain\Machine\State\InvalidMachineStateException;
 use App\VendingMachine\Domain\Machine\State\MachineEvent;
 use App\VendingMachine\Domain\Machine\State\MachineGuards;
@@ -19,9 +20,12 @@ use App\VendingMachine\Domain\Machine\State\MachineTransitionTable;
 
 final class VendingMachine
 {
+    /**
+     * @param array<string, SlotState> $slots
+     */
     private function __construct(
         private int $id,
-        /** @var array<string, Slot> */
+        private Configuration $configuration,
         private array $slots,
         private CoinMachine $coinMachine,
         private MachineState $state = MachineState::IDLE,
@@ -29,14 +33,22 @@ final class VendingMachine
     }
 
     /**
-     * @param array<string, Slot> $slots
+     * @param array<string, SlotState> $slots
      */
     public static function load(
         int $id,
+        Configuration $configuration,
         array $slots,
         CoinMachine $coinMachine,
+        MachineState $state = MachineState::IDLE,
     ): self {
-        return new self($id, $slots, $coinMachine);
+        return new self(
+            id: $id,
+            configuration: $configuration,
+            slots: $slots,
+            coinMachine: $coinMachine,
+            state: $state,
+        );
     }
 
     public function insertCoin(Coin $coin): void
@@ -47,13 +59,10 @@ final class VendingMachine
 
         $this->coinMachine->insertCoin($coin);
 
-        $this->state = match (true) {
-            $this->coinMachine->hasInsertedCoins() > 0 => MachineState::HAS_INSERTED_COINS,
-            default => MachineState::IDLE,
-        };
+        $this->state = $this->coinMachine->hasInsertedCoins() ? MachineState::HAS_INSERTED_COINS : MachineState::IDLE;
     }
 
-    public function selectProduct(ProductType $type): TransactionResult
+    public function selectProduct(ProductType $product): TransactionResult
     {
         if (!MachineGuards::canSelectProduct($this->state)) {
             throw new InvalidMachineStateException();
@@ -62,22 +71,35 @@ final class VendingMachine
         $this->state = MachineTransitionTable::eventTransition($this->state, MachineEvent::SELECT_PRODUCT);
 
         try {
-            $slot = $this->slotByProduct($type);
+            $slot = $this->slotByProduct($product);
 
             if (!$slot->canDispense()) {
                 throw new OutOfStockException();
             }
 
-            $result = $this->coinMachine->purchase($slot->product()->price);
+            $price = $this->configuration
+                ->slotConfiguration($product)
+                ->price;
 
-            $slot->dispense();
+            $purchase = $this->coinMachine->purchase($price);
 
-            $this->state = MachineTransitionTable::transition($this->state, MachineOutcome::SUCCESS);
+            $this->slots[$product->value] = $slot->dispense();
 
-            return new TransactionResult($type, $result->change, $result->retainedCash);
+            $this->state = MachineTransitionTable::transition(
+                $this->state,
+                MachineOutcome::SUCCESS,
+            );
+
+            return new TransactionResult(
+                product: $product,
+                change: $purchase->change,
+                retainedCash: $purchase->retainedCash,
+            );
         } catch (\Throwable $e) {
-            // FAILURE transition
-            $this->state = MachineTransitionTable::transition($this->state, MachineOutcome::FAILURE);
+            $this->state = MachineTransitionTable::transition(
+                $this->state,
+                MachineOutcome::FAILURE,
+            );
 
             throw $e;
         }
@@ -94,42 +116,29 @@ final class VendingMachine
 
         $coins = $this->coinMachine->returnCoins();
 
-        $this->state = MachineTransitionTable::eventTransition($this->state, MachineEvent::RETURN_COINS);
+        $this->state = MachineTransitionTable::eventTransition(
+            $this->state,
+            MachineEvent::RETURN_COINS,
+        );
 
         return $coins;
     }
 
-    /**
-     * @return array<string, Slot>
-     */
-    public function slots(): array
-    {
-        return $this->slots;
-    }
-
-    public function state(): MachineState
-    {
-        return $this->state;
-    }
-
-    public function id(): int
-    {
-        return $this->id;
-    }
-
-    public function coinMachine(): CoinMachine
-    {
-        return $this->coinMachine;
-    }
-
     public function refillSlot(ProductType $product): void
     {
-        $this->slotByProduct($product)->refill();
+        $this->slots[$product->value] = $this
+            ->slotByProduct($product)
+            ->refill();
     }
 
-    public function refillChange(Coin $coin, int $quantity): RefillResult
-    {
-        return $this->coinMachine->refill($coin, $quantity);
+    public function refillChange(
+        Coin $coin,
+        int $quantity,
+    ): RefillResult {
+        return $this->coinMachine->refill(
+            $coin,
+            $quantity,
+        );
     }
 
     public function open(): void
@@ -152,8 +161,40 @@ final class VendingMachine
         return MachineState::IN_MAINTENANCE === $this->state;
     }
 
-    private function slotByProduct(ProductType $product): Slot
+    /**
+     * @return array<string, SlotState>
+     */
+    public function slots(): array
     {
+        return $this->slots;
+    }
+
+    public function configuration(): Configuration
+    {
+        return $this->configuration;
+    }
+
+    public function state(): MachineState
+    {
+        return $this->state;
+    }
+
+    public function id(): int
+    {
+        return $this->id;
+    }
+
+    public function coinMachine(): CoinMachine
+    {
+        return $this->coinMachine;
+    }
+
+    private function slotByProduct(ProductType $product): SlotState
+    {
+        if (!isset($this->slots[$product->value])) {
+            throw new ProductNotFoundException();
+        }
+
         return $this->slots[$product->value];
     }
 }

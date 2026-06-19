@@ -6,9 +6,10 @@ namespace App\Tests\Unit\VendingMachine\Domain;
 
 use App\VendingMachine\Domain\Catalog\ProductType;
 use App\VendingMachine\Domain\Coin\Coin;
-use App\VendingMachine\Domain\Inventory\OutOfStockException;
+use App\VendingMachine\Domain\Machine\Slot\OutOfStockException;
 use App\VendingMachine\Domain\Machine\State\InvalidMachineStateException;
 use App\VendingMachine\Domain\Machine\State\MachineState;
+use App\VendingMachine\Domain\ProductNotFoundException;
 use PHPUnit\Framework\TestCase;
 
 final class VendingMachineBehaviorTest extends TestCase
@@ -53,5 +54,14 @@ final class VendingMachineBehaviorTest extends TestCase
         $machine->returnCoins();
 
         $this->assertSame(MachineState::IDLE, $machine->state());
+    }
+
+    public function testThrowsWhenProductDoesNotExist(): void
+    {
+        $machine = VendingMachineFactory::create();
+
+        $this->expectException(ProductNotFoundException::class);
+
+        $machine->selectProduct(ProductType::SODA);
     }
 }

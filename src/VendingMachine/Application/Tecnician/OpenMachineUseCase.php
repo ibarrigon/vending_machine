@@ -2,13 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\VendingMachine\Application\Tecnician\Product;
+namespace App\VendingMachine\Application\Tecnician;
 
 use App\VendingMachine\Application\VendingMachineRepositoryInterface;
-use App\VendingMachine\Domain\Machine\State\InvalidMachineStateException;
 use Symfony\Component\Lock\LockFactory;
 
-final class RefillSlotUseCase
+final class OpenMachineUseCase
 {
     public function __construct(
         private VendingMachineRepositoryInterface $repository,
@@ -16,17 +15,14 @@ final class RefillSlotUseCase
     ) {
     }
 
-    public function execute(RefillSlotCommand $command): void
+    public function execute(int $machineId): void
     {
-        $lock = $this->lockFactory->createLock('machine_'.$command->machineId);
+        $lock = $this->lockFactory->createLock('machine_'.$machineId);
         $lock->acquire(true);
 
         try {
-            $machine = $this->repository->get($command->machineId);
-            if (!$machine->canBeRefilled()) {
-                throw new InvalidMachineStateException();
-            }
-            $machine->refillSlot($command->product);
+            $machine = $this->repository->get($machineId);
+            $machine->open();
 
             $this->repository->save($machine);
         } catch (\Throwable $e) {

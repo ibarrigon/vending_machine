@@ -12,27 +12,34 @@ use PHPUnit\Framework\TestCase;
 
 final class ChangeBoxPropertyTest extends TestCase
 {
+    /**
+     * @param array<int, int> $input
+     */
     #[DataProvider('cases')]
     public function testConservationOfCoins(array $input): void
     {
         $box = ChangeBox::load($input);
+
         $this->assertSame($input, $box->coins());
     }
 
-    public static function cases(): array
+    /**
+     * @return iterable<int, array{array<int,int>}>
+     */
+    public static function cases(): iterable
     {
-        return [
-            [[25 => 2, 10 => 1]],
-            [[25 => 0]],
-        ];
+        yield [[25 => 2, 10 => 1]];
+        yield [[25 => 0]];
     }
 
+    /**
+     * @param array<int, int> $initial
+     */
     #[DataProvider('randomBoxesProvider')]
     public function testNoNegativeQuantities(array $initial, int $amount): void
     {
-        $box = ChangeBox::load($initial);
-
         try {
+            $box = ChangeBox::load($initial);
             $result = $box->withdraw($amount);
             $box = $box->removeMany($result);
 
@@ -40,29 +47,35 @@ final class ChangeBoxPropertyTest extends TestCase
                 $this->assertGreaterThanOrEqual(0, $qty);
             }
         } catch (InsufficientChangeException) {
-            $this->assertTrue(true);
+            return;
         }
     }
 
+    /**
+     * @param array<int, int> $initial
+     */
     #[DataProvider('randomBoxesProvider')]
     public function testWithdrawIsDeterministic(array $initial, int $amount): void
     {
-        $box1 = ChangeBox::load($initial);
-        $box2 = ChangeBox::load($initial);
-
         try {
+            $box1 = ChangeBox::load($initial);
+            $box2 = ChangeBox::load($initial);
+
             $r1 = $box1->withdraw($amount);
             $r2 = $box2->withdraw($amount);
 
             $this->assertEquals($r1, $r2);
         } catch (InsufficientChangeException) {
-            $this->assertTrue(true);
+            return;
         }
     }
 
+    /**
+     * @return iterable<int, array{array<int,int>, int}>
+     */
     public static function randomBoxesProvider(): iterable
     {
-        for ($i = 0; $i < 50; $i++) {
+        for ($i = 0; $i < 50; ++$i) {
             yield [
                 self::randomBox(),
                 random_int(0, 500),
@@ -70,9 +83,16 @@ final class ChangeBoxPropertyTest extends TestCase
         }
     }
 
+    /**
+     * @return array<int, int>
+     */
     private static function randomBox(): array
     {
-        $coins = array_map(fn(Coin $coin) => $coin->value, Coin::cases());
+        $coins = array_map(
+            fn (Coin $coin): int => $coin->value,
+            Coin::cases()
+        );
+
         $box = [];
 
         foreach ($coins as $coin) {
@@ -80,10 +100,5 @@ final class ChangeBoxPropertyTest extends TestCase
         }
 
         return $box;
-    }
-
-    private function totalCoins(array $box): int
-    {
-        return array_sum($box);
     }
 }

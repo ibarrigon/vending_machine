@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\VendingMachine\Application\Tecnician\Product;
+namespace App\VendingMachine\Application\Tecnician;
 
 use App\VendingMachine\Application\VendingMachineRepositoryInterface;
 use App\VendingMachine\Domain\Machine\State\InvalidMachineStateException;
 use Symfony\Component\Lock\LockFactory;
 
-final class CloseMachineUseCase
+final class ResetCreditUseCase
 {
     public function __construct(
         private VendingMachineRepositoryInterface $repository,
@@ -16,7 +16,7 @@ final class CloseMachineUseCase
     ) {
     }
 
-    public function __invoke(int $machineId): void
+    public function execute(int $machineId): void
     {
         $lock = $this->lockFactory->createLock('machine_'.$machineId);
         $lock->acquire(true);
@@ -26,8 +26,7 @@ final class CloseMachineUseCase
             if (!$machine->isInMaintenance()) {
                 throw new InvalidMachineStateException();
             }
-
-            $machine->close();
+            $machine->coinMachine()->resetRetainedCash();
 
             $this->repository->save($machine);
         } catch (\Throwable $e) {

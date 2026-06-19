@@ -18,7 +18,7 @@ final readonly class RefillChangeUseCase
     ) {
     }
 
-    public function __invoke(RefillChangeCommand $command): RefillResult
+    public function execute(RefillChangeCommand $command): RefillResult
     {
         $lock = $this->lockFactory->createLock('machine_'.$command->machineId);
         $lock->acquire(true);

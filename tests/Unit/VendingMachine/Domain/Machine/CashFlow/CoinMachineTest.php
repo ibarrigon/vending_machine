@@ -9,6 +9,7 @@ use App\VendingMachine\Domain\Machine\CashFlow\ChangeBox;
 use App\VendingMachine\Domain\Machine\CashFlow\CoinMachine;
 use App\VendingMachine\Domain\Machine\CashFlow\InsertedCoins;
 use App\VendingMachine\Domain\Machine\CashFlow\InsufficientFundsException;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 final class CoinMachineTest extends TestCase
@@ -48,11 +49,13 @@ final class CoinMachineTest extends TestCase
         $machine = CoinMachine::load(ChangeBox::empty(), InsertedCoins::empty());
 
         $machine->insertCoin(Coin::TWENTY_FIVE_CENTS);
-
         $machine->purchase(100);
     }
 
-        #[DataProvider('coinSequencesProvider')]
+    /**
+     * @param list<Coin> $coins
+     */
+    #[DataProvider('coinSequencesProvider')]
     public function testNoMoneyIsLost(array $coins, int $price): void
     {
         $machine = CoinMachine::load(ChangeBox::empty(), InsertedCoins::empty());
@@ -65,18 +68,22 @@ final class CoinMachineTest extends TestCase
 
         try {
             $result = $machine->purchase($price);
+
             $changeValue = $this->sumCoins($result->change);
             $remain = $machine->insertedAmount();
 
             $this->assertGreaterThanOrEqual(0, $changeValue);
             $this->assertGreaterThanOrEqual(0, $remain);
 
-            $this->assertEquals($initialValue, $price + $changeValue + $remain);
+            $this->assertSame($initialValue, $price + $changeValue + $remain);
         } catch (InsufficientFundsException) {
             $this->assertTrue(true);
         }
     }
 
+    /**
+     * @param list<Coin> $coins
+     */
     #[DataProvider('coinSequencesProvider')]
     public function testPurchaseIsDeterministic(array $coins, int $price): void
     {
@@ -98,28 +105,33 @@ final class CoinMachineTest extends TestCase
         }
     }
 
+    /**
+     * @return iterable<int, array{list<Coin>, int}>
+     */
     public static function coinSequencesProvider(): iterable
     {
-        $coins = Coin::cases();
+        $cases = array_values(Coin::cases());
 
-        for ($i = 0; $i < 50; $i++) {
-            yield [
-                array_map(
-                    fn() => $coins[array_rand($coins)],
-                    range(1, random_int(1, 10))
-                ),
-                random_int(0, 300),
-            ];
+        for ($i = 0; $i < 50; ++$i) {
+            /** @var list<Coin> $sequence */
+            $sequence = array_map(
+                fn (): Coin => $cases[array_rand($cases)],
+                range(1, random_int(1, 10))
+            );
+
+            yield [$sequence, random_int(0, 300)];
         }
     }
 
+    /**
+     * @param list<Coin> $coins
+     */
     private function sumCoins(array $coins): int
     {
         return array_reduce(
             $coins,
-            fn(int $carry, Coin $coin) => $carry + $coin->value,
+            fn (int $carry, Coin $coin): int => $carry + $coin->value,
             0
         );
     }
-
 }

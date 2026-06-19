@@ -22,6 +22,8 @@ Obviously, I can work with migrations too, but here I preferred to be a bit old-
 
 Everybody knows that floating-point arithmetic is a pain. The first thing I did was use cents becouse that way I can completely avoid those issues. Ah! Then I only need to convert values to decimals in the output.
 
+I put the price inside Product, and its fixed
+
 ## Versions
 
 1. php 8.4

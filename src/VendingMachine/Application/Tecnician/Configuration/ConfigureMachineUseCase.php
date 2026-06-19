@@ -2,12 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\VendingMachine\Application\Tecnician\Product;
+namespace App\VendingMachine\Application\Tecnician\Configuration;
 
 use App\VendingMachine\Application\VendingMachineRepositoryInterface;
+use App\VendingMachine\Domain\Machine\State\InvalidMachineStateException;
 use Symfony\Component\Lock\LockFactory;
 
-final class OpenMachineUseCase
+final class ConfigureMachineUseCase
 {
     public function __construct(
         private VendingMachineRepositoryInterface $repository,
@@ -15,14 +16,18 @@ final class OpenMachineUseCase
     ) {
     }
 
-    public function __invoke(int $machineId): void
+    public function execute(ConfigurationCommand $command): void
     {
-        $lock = $this->lockFactory->createLock('machine_'.$machineId);
+        $lock = $this->lockFactory->createLock('machine_'.$command->machineId);
         $lock->acquire(true);
 
         try {
-            $machine = $this->repository->get($machineId);
-            $machine->open();
+            $machine = $this->repository->get($command->machineId);
+            if (!$machine->isInMaintenance()) {
+                throw new InvalidMachineStateException();
+            }
+
+            // $machine->modifyConfig($command->config);
 
             $this->repository->save($machine);
         } catch (\Throwable $e) {

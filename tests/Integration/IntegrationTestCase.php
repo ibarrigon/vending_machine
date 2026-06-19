@@ -25,8 +25,8 @@ abstract class IntegrationTestCase extends TestCase
 
         $dsn = $_ENV['DATABASE_URL'] ?? getenv('DATABASE_URL');
 
-        if (!$dsn) {
-            throw new \RuntimeException('DATABASE_URL not set');
+        if (!is_string($dsn) || '' === $dsn) {
+            throw new \RuntimeException('DATABASE_URL not set or invalid');
         }
 
         self::$pdo = new \PDO($dsn);
@@ -51,8 +51,7 @@ abstract class IntegrationTestCase extends TestCase
     }
 
     /**
-     * Define aquí las tablas reales del dominio
-     * (evita introspección lenta en tests)
+     * @return list<string>
      */
     private function getTables(): array
     {

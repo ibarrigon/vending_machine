@@ -53,5 +53,5 @@ final class ChangeBoxTest extends TestCase
 
         $this->assertSame(200, $result->accepted);
         $this->assertSame(50, $result->rejected);
-    }    
+    }
 }

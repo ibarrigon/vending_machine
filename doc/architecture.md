@@ -30,6 +30,7 @@ This folder contains everything inside the machine:
 
 1. **Slots**: Where the products are stored.
 2. **CoinMachine**: The "black box" inside the machine that controls everything related to coins.
+3. **Configuration**: The setup of the vending machine. Provide current slots (products) and it's price. Can be extended to add more configs, like coins limit
 
 ## Application
 
