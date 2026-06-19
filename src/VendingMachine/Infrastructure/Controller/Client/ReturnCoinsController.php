@@ -6,6 +6,7 @@ namespace App\VendingMachine\Infrastructure\Controller\Client;
 
 use App\VendingMachine\Application\Client\ReturnCoins\ReturnCoinsCommand;
 use App\VendingMachine\Application\Client\ReturnCoins\ReturnCoinsUseCase;
+use App\VendingMachine\Infrastructure\Transformer\OutputCentsTransformer;
 use OpenApi\Attributes as OA;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -17,6 +18,7 @@ final class ReturnCoinsController extends AbstractController
 {
     public function __construct(
         private ReturnCoinsUseCase $returnCoins,
+        private OutputCentsTransformer $transformer,
     ) {
     }
 
@@ -49,8 +51,15 @@ final class ReturnCoinsController extends AbstractController
     )]
     public function returnCoins(int $id): JsonResponse
     {
-        $coins = $this->returnCoins->execute(new ReturnCoinsCommand($id));
+        try {
+            $coins = $this->returnCoins->execute(new ReturnCoinsCommand($id));
 
-        return new JsonResponse(['coins' => $coins], Response::HTTP_OK);
+            return new JsonResponse(['coins' => $this->transformer->transformList($coins)], Response::HTTP_OK);
+        } catch (\Throwable $e) {
+            return new JsonResponse(
+                ['status' => 'ko', 'error' => $e->getMessage()],
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
     }
 }

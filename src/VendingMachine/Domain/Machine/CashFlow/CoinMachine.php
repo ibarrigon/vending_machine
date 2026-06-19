@@ -11,22 +11,22 @@ final class CoinMachine
     private function __construct(
         private ChangeBox $changeBox,
         private InsertedCoins $insertedCoins,
-        private int $pendingBalance = 0,
+        private int $retainedCash = 0,
     ) {
     }
 
     public static function load(
         ChangeBox $changeBox,
         InsertedCoins $insertedCoins,
-        int $pendingBalance = 0,
+        int $retainedCash = 0,
     ): self {
-        return new self($changeBox, $insertedCoins, $pendingBalance);
+        return new self($changeBox, $insertedCoins, $retainedCash);
     }
 
     public function insertCoin(Coin $coin): void
     {
         $this->insertedCoins = $this->insertedCoins->insert($coin);
-        $this->pendingBalance += $coin->value;
+        $this->retainedCash += $coin->value;
     }
 
     /**
@@ -35,41 +35,45 @@ final class CoinMachine
     public function returnCoins(): array
     {
         $coins = $this->insertedCoins->coins();
-        $this->pendingBalance = 0;
         $this->insertedCoins = $this->insertedCoins->clear();
 
         return $coins;
     }
 
-    /**
-     * @return Coin[]
-     */
-    public function purchase(int $price): array
+    public function purchase(int $price): PurchaseResult
     {
-        if ($this->pendingBalance < $price) {
+        if ($this->retainedCash < $price) {
             throw new InsufficientFundsException();
         }
 
-        $candidateBox = $this->changeBox->addMany($this->insertedCoins->coins());
+        $candidateBox = $this->changeBox->addMany(
+            $this->insertedCoins->coins()
+        );
+
+        $changeAmount = $this->retainedCash - $price;
 
         try {
-            $change = $candidateBox->withdraw($this->pendingBalance - $price);
+            $change = $candidateBox->withdraw($changeAmount);
+            $this->changeBox = $candidateBox->removeMany($change);
+            $retainedCash = 0;
         } catch (InsufficientChangeException) {
-            // 👇 CLAVE: no rompemos estado, dejamos saldo pendiente
-            throw new InsufficientChangeException();
+            $change = [];
+            $this->changeBox = $candidateBox;
+            $retainedCash = $changeAmount;
         }
 
-        $this->changeBox = $candidateBox->removeMany($change);
-
         $this->insertedCoins = $this->insertedCoins->clear();
-        $this->pendingBalance = 0;
+        $this->retainedCash = $retainedCash;
 
-        return $change;
+        return new PurchaseResult(
+            change: $change,
+            retainedCash: $retainedCash,
+        );
     }
 
     public function insertedAmount(): int
     {
-        return $this->pendingBalance;
+        return $this->retainedCash;
     }
 
     public function hasInsertedCoins(): bool
@@ -98,5 +102,15 @@ final class CoinMachine
             rejected: $result->rejected,
             currentQuantity: $result->currentQuantity,
         );
+    }
+
+    public function retainedCash(): int
+    {
+        return $this->retainedCash;
+    }
+
+    public function resetRetainedCash(): void
+    {
+        $this->retainedCash = 0;
     }
 }

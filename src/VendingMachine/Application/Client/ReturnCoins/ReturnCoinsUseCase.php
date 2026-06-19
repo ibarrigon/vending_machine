@@ -5,9 +5,10 @@ declare(strict_types=1);
 namespace App\VendingMachine\Application\Client\ReturnCoins;
 
 use App\VendingMachine\Application\VendingMachineRepositoryInterface;
+use App\VendingMachine\Domain\Coin\Coin;
 use Symfony\Component\Lock\LockFactory;
 
-final class ReturnCoinsUseCase
+final readonly class ReturnCoinsUseCase
 {
     public function __construct(
         private VendingMachineRepositoryInterface $repository,
@@ -15,6 +16,9 @@ final class ReturnCoinsUseCase
     ) {
     }
 
+    /**
+     * @return list<int>
+     */
     public function execute(ReturnCoinsCommand $command): array
     {
         $lock = $this->lockFactory->createLock('machine_'.$command->machineId);
@@ -27,7 +31,12 @@ final class ReturnCoinsUseCase
 
             $this->repository->save($machine);
 
-            return $coins;
+            return array_values(
+                array_map(fn (Coin $coin) => $coin->value, $coins)
+            );
+        } catch (\Throwable $e) {
+            // TODO: Implement diferents exceptions and if machine becomes unavailable, set state as out of order
+            throw $e;
         } finally {
             $lock->release();
         }

@@ -23,16 +23,22 @@ final class InsertCoinCommandConsole extends Command
     protected function configure(): void
     {
         $this
-            ->addArgument('machineId', InputArgument::REQUIRED)
+            ->addArgument('machineId', InputArgument::OPTIONAL, '1')
             ->addArgument('coin', InputArgument::REQUIRED);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        /** @var string $machineId */
+        $machineId = $input->getArgument('machineId');
+
+        /** @var string $coin */
+        $coin = $input->getArgument('coin');
+
         $this->insertCoin->execute(
             new InsertCoinCommand(
-                machineId: (int) $input->getArgument('machineId'),
-                coin: (int) $input->getArgument('coin'),
+                machineId: \intval($machineId),
+                coin: \intval($coin),
             )
         );
 

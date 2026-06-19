@@ -25,6 +25,9 @@ final class OpenMachineUseCase
             $machine->open();
 
             $this->repository->save($machine);
+        } catch (\Throwable $e) {
+            // TODO: Implement diferents exceptions and if machine becomes unavailable, set state as out of order
+            throw $e;
         } finally {
             $lock->release();
         }

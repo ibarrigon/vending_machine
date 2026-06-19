@@ -8,7 +8,7 @@ use App\VendingMachine\Application\VendingMachineRepositoryInterface;
 use App\VendingMachine\Domain\Machine\State\InvalidMachineStateException;
 use Symfony\Component\Lock\LockFactory;
 
-final class CloseMachineUseCase
+final class ResetCreditUseCase
 {
     public function __construct(
         private VendingMachineRepositoryInterface $repository,
@@ -26,8 +26,7 @@ final class CloseMachineUseCase
             if (!$machine->isInMaintenance()) {
                 throw new InvalidMachineStateException();
             }
-
-            $machine->close();
+            $machine->coinMachine()->resetRetainedCash();
 
             $this->repository->save($machine);
         } catch (\Throwable $e) {

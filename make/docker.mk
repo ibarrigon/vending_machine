@@ -13,6 +13,7 @@ logs:
 	$(COMPOSE) logs -f
 
 install:
+	$(COMPOSE) exec app git config --global --add safe.directory /app
 	$(COMPOSE) exec app composer install
 
 shell:
@@ -20,3 +21,10 @@ shell:
 
 clear:
 	$(COMPOSE) exec app bin/console cache:clear
+
+kill:
+	docker stop $(docker ps -aq)
+	docker rm $(docker ps -aq)
+	docker rmi $(docker images -q)
+	docker volume rm $(docker volume ls -q)
+	docker network prune -f

@@ -4,11 +4,15 @@ declare(strict_types=1);
 
 namespace App\VendingMachine\Application;
 
-final class TransactionResultDTO
+final readonly class TransactionResultDTO
 {
+    /**
+     * @param list<int> $change
+     */
     public function __construct(
-        public readonly string $product,
-        public readonly array $change,
+        public string $product,
+        public array $change,
+        public int $retainedCash,
     ) {
     }
 }

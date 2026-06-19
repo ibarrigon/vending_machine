@@ -11,6 +11,9 @@ final readonly class ChangeBox
     private const MAX_COINS = 200;
     private const LOW_CHANGE_THRESHOLD = 20;
 
+    /**
+     * @param array<int, int> $coins
+     */
     private function __construct(
         private array $coins,
     ) {
@@ -21,6 +24,9 @@ final readonly class ChangeBox
         return new self([]);
     }
 
+    /**
+     * @param array<int, int> $coins
+     */
     public static function load(array $coins): self
     {
         $normalized = [];
@@ -38,6 +44,9 @@ final readonly class ChangeBox
         return new self($normalized);
     }
 
+    /**
+     * @return array<int, int>
+     */
     public function coins(): array
     {
         return $this->coins;
@@ -66,6 +75,9 @@ final readonly class ChangeBox
         return array_sum($this->coins);
     }
 
+    /**
+     * @param Coin[] $coins
+     */
     public function addMany(array $coins): self
     {
         $box = $this;
@@ -94,6 +106,9 @@ final readonly class ChangeBox
         return new self($coins);
     }
 
+    /**
+     * @param Coin[] $coins
+     */
     public function removeMany(array $coins): self
     {
         $box = $this;
@@ -105,9 +120,30 @@ final readonly class ChangeBox
         return $box;
     }
 
+    /**
+     * @return Coin[]
+     */
     public function withdraw(int $amount): array
     {
-        return $this->calculateWithdraw($amount, $this->coins);
+        $result = [];
+
+        $available = $this->coins;
+
+        foreach (Coin::orderedCases() as $coin) {
+            $coinValue = $coin->value;
+
+            while ($amount >= $coinValue && ($available[$coinValue] ?? 0) > 0) {
+                $amount -= $coinValue;
+                --$available[$coinValue];
+                $result[] = $coin;
+            }
+        }
+
+        if ($amount > 0) {
+            throw new InsufficientChangeException();
+        }
+
+        return $result;
     }
 
     public function refill(Coin $coin, int $quantity): ChangeBoxRefillResult
@@ -136,36 +172,5 @@ final readonly class ChangeBox
     public function needChange(Coin $coin): bool
     {
         return $this->quantityOf($coin) <= self::LOW_CHANGE_THRESHOLD;
-    }
-
-    /**
-     * @param array<int,int> $coins
-     *
-     * @return Coin[]
-     */
-    private function calculateWithdraw(int $amount, array $coins): array
-    {
-        $result = [];
-
-        $available = $coins;
-
-        foreach (Coin::orderedCases() as $coin) {
-            $coinValue = $coin->value;
-
-            while (
-                $amount >= $coinValue
-                && ($available[$coinValue] ?? 0) > 0
-            ) {
-                $amount -= $coinValue;
-                --$available[$coinValue];
-                $result[] = $coin;
-            }
-        }
-
-        if ($amount > 0) {
-            throw new InsufficientChangeException();
-        }
-
-        return $result;
     }
 }

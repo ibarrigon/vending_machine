@@ -21,7 +21,7 @@ final class VendingMachine
 {
     private function __construct(
         private int $id,
-        /** @var array<ProductType, Slot> */
+        /** @var array<string, Slot> */
         private array $slots,
         private CoinMachine $coinMachine,
         private MachineState $state = MachineState::IDLE,
@@ -68,13 +68,13 @@ final class VendingMachine
                 throw new OutOfStockException();
             }
 
-            $change = $this->coinMachine->purchase($slot->product()->price);
+            $result = $this->coinMachine->purchase($slot->product()->price);
 
             $slot->dispense();
 
             $this->state = MachineTransitionTable::transition($this->state, MachineOutcome::SUCCESS);
 
-            return new TransactionResult($type, $change);
+            return new TransactionResult($type, $result->change, $result->retainedCash);
         } catch (\Throwable $e) {
             // FAILURE transition
             $this->state = MachineTransitionTable::transition($this->state, MachineOutcome::FAILURE);

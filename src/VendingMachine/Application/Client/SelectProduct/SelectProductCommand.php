@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\VendingMachine\Application\Client\SelectProduct;
 
-final class SelectProductCommand
+final readonly class SelectProductCommand
 {
     public function __construct(
         public readonly int $machineId,

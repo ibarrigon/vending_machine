@@ -2,10 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\VendingMachine\Infrastructure\Controller\Client;
+namespace App\VendingMachine\Infrastructure\Controller\Client\SelectProduct;
 
 use App\VendingMachine\Application\Client\SelectProduct\SelectProductCommand;
 use App\VendingMachine\Application\Client\SelectProduct\SelectProductUseCase;
+use App\VendingMachine\Infrastructure\Transformer\OutputCentsTransformer;
 use OpenApi\Attributes as OA;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -18,6 +19,7 @@ final class SelectProductController extends AbstractController
 {
     public function __construct(
         private SelectProductUseCase $selectProduct,
+        private OutputCentsTransformer $transformer,
     ) {
     }
 
@@ -78,17 +80,24 @@ final class SelectProductController extends AbstractController
         #[MapRequestPayload]
         SelectProductRequest $request,
     ): JsonResponse {
-        $result = $this->selectProduct->execute(
-            new SelectProductCommand(
-                machineId: $id,
-                product: $request->product,
-            )
-        );
+        try {
+            $result = $this->selectProduct->execute(
+                new SelectProductCommand(
+                    machineId: $id,
+                    product: $request->product,
+                )
+            );
 
-        return new JsonResponse([
-            'product' => $result->product,
-            'change' => $result->change,
-            'remain_cash' => 0,
-        ], Response::HTTP_OK);
+            return new JsonResponse([
+                'product' => $result->product,
+                'change' => $this->transformer->transformList($result->change),
+                'retained_cash' => $this->transformer->transform($result->retainedCash),
+            ], Response::HTTP_OK);
+        } catch (\Throwable $e) {
+            return new JsonResponse(
+                ['status' => 'ko', 'error' => $e->getMessage()],
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
     }
 }

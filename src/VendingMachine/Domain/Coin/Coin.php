@@ -11,6 +11,9 @@ enum Coin: int
     case TWENTY_FIVE_CENTS = 25;
     case ONE_EURO = 100;
 
+    /**
+     * @return Coin[]
+     */
     public static function orderedCases(): array
     {
         return [

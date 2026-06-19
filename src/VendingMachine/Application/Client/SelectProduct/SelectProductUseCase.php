@@ -8,9 +8,10 @@ use App\VendingMachine\Application\TransactionResultDTO;
 use App\VendingMachine\Application\VendingMachineRepositoryInterface;
 use App\VendingMachine\Domain\Catalog\InvalidProductException;
 use App\VendingMachine\Domain\Catalog\ProductType;
+use App\VendingMachine\Domain\Coin\Coin;
 use Symfony\Component\Lock\LockFactory;
 
-final class SelectProductUseCase
+final readonly class SelectProductUseCase
 {
     public function __construct(
         private VendingMachineRepositoryInterface $repository,
@@ -36,8 +37,12 @@ final class SelectProductUseCase
 
             return new TransactionResultDTO(
                 product: $result->product->value,
-                change: $result->change,
+                change: array_values(array_map(fn (Coin $coin): int => $coin->value, $result->change)),
+                retainedCash: $result->retainedCash,
             );
+        } catch (\Throwable $e) {
+            // TODO: Implement diferents exceptions and if machine becomes unavailable, set state as out of order
+            throw $e;
         } finally {
             $lock->release();
         }

@@ -12,7 +12,7 @@ help:
 	@echo "   $(BCyan)up:                   $(Color_Off)Initialize dokcer with build"
 	@echo "   $(BCyan)down:                 $(Color_Off)Shutdown docker"
 	@echo "   $(BCyan)build:                $(Color_Off)Build images"
-	@echo "   $(BCyan)install:              $(Color_Off)"
+	@echo "   $(BCyan)install:              $(Color_Off)Execute composer install"
 	@echo "   $(BCyan)clear:                $(Color_Off)Clear Symfony cache"
 	@echo "   $(IPurple)DB$(Color_Off)"
 	@echo "   $(BCyan)db-init:              $(Color_Off)Intialize BD, used in init"

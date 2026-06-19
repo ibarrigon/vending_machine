@@ -33,6 +33,9 @@ class VendingMachineRecord
     #[ORM\Column(type: 'json')]
     private array $insertedCoins = [];
 
+    #[ORM\Column(type: 'integer')]
+    private int $retainedCash = 0;
+
     /**
      * @param list<array{product: string, price: int, quantity: int}> $slots
      */
@@ -55,6 +58,11 @@ class VendingMachineRecord
     public function setInsertedCoins(array $coins): void
     {
         $this->insertedCoins = $coins;
+    }
+
+    public function setRetainedCash(int $retainedCash): void
+    {
+        $this->retainedCash = $retainedCash;
     }
 
     public function id(): int
@@ -84,5 +92,10 @@ class VendingMachineRecord
     public function insertedCoins(): array
     {
         return $this->insertedCoins;
+    }
+
+    public function retainedCash(): int
+    {
+        return $this->retainedCash;
     }
 }

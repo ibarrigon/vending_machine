@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\VendingMachine\Infrastructure\Controller\Client;
+namespace App\VendingMachine\Infrastructure\Controller\Client\InsertCoin;
 
 use App\VendingMachine\Application\Client\InsertCoin\InsertCoinCommand;
 use App\VendingMachine\Application\Client\InsertCoin\InsertCoinUseCase;
@@ -68,13 +68,20 @@ final class InsertCoinController extends AbstractController
         #[MapRequestPayload]
         InsertCoinRequest $request,
     ): JsonResponse {
-        $this->insertCoin->execute(
-            new InsertCoinCommand(
-                machineId: $id,
-                coin: $request->coin,
-            ),
-        );
+        try {
+            $this->insertCoin->execute(
+                new InsertCoinCommand(
+                    machineId: $id,
+                    coin: $request->coin,
+                ),
+            );
 
-        return new JsonResponse(['status' => 'ok'], Response::HTTP_OK);
+            return new JsonResponse(['status' => 'ok'], Response::HTTP_OK);
+        } catch (\Throwable $e) {
+            return new JsonResponse(
+                ['status' => 'ko', 'error' => $e->getMessage()],
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
     }
 }

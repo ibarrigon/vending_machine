@@ -9,7 +9,7 @@ use App\VendingMachine\Domain\Coin\Coin;
 use App\VendingMachine\Domain\Coin\InvalidCoinException;
 use Symfony\Component\Lock\LockFactory;
 
-final class InsertCoinUseCase
+final readonly class InsertCoinUseCase
 {
     public function __construct(
         private VendingMachineRepositoryInterface $repository,
@@ -33,6 +33,9 @@ final class InsertCoinUseCase
             $machine->insertCoin($coin);
 
             $this->repository->save($machine);
+        } catch (\Throwable $e) {
+            // TODO: Implement diferents exceptions and if machine becomes unavailable, set state as out of order
+            throw $e;
         } finally {
             $lock->release();
         }

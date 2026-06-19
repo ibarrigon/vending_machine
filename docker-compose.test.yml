@@ -1,15 +1,6 @@
 services:
-  mysql_test:
-    image: mysql:8.4
-    environment:
-      MYSQL_DATABASE: vending_machine_test
-      MYSQL_USER: vending
-      MYSQL_PASSWORD: vending
-      MYSQL_ROOT_PASSWORD: root
-    ports:
-      - "3307:3306"
-
   tests:
+    image: vending_machine_test
     build:
       context: .
       dockerfile: docker/php/Dockerfile

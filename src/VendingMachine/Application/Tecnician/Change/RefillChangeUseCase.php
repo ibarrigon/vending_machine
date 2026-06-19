@@ -32,6 +32,9 @@ final readonly class RefillChangeUseCase
             $this->repository->save($machine);
 
             return $result;
+        } catch (\Throwable $e) {
+            // TODO: Implement diferents exceptions and if machine becomes unavailable, set state as out of order
+            throw $e;
         } finally {
             $lock->release();
         }

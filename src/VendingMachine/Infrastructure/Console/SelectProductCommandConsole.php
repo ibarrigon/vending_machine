@@ -23,16 +23,21 @@ final class SelectProductCommandConsole extends Command
     protected function configure(): void
     {
         $this
-            ->addArgument('machineId', InputArgument::REQUIRED)
+            ->addArgument('machineId', InputArgument::OPTIONAL, '1')
             ->addArgument('product', InputArgument::REQUIRED);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        /** @var string $machineId */
+        $machineId = $input->getArgument('machineId');
+        /** @var string $product */
+        $product = $input->getArgument('product');
+
         $result = $this->selectProduct->execute(
             new SelectProductCommand(
-                machineId: (int) $input->getArgument('machineId'),
-                product: $input->getArgument('product'),
+                machineId: \intval($machineId),
+                product: $product,
             )
         );
 

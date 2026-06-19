@@ -10,3 +10,5 @@ Of course, I started with just a few instructions like:
 "Quiero un nginx, un PHP y una base de datos con un volumen"... that was it.
 
 Well, I had to remove some configurations that Symfony adds by default... but honestly, it's fine.
+
+You want to know the images I created? Then search for any image with the start string "vending_machine_"

@@ -22,19 +22,22 @@ final class ReturnCoinsCommandConsole extends Command
 
     protected function configure(): void
     {
-        $this->addArgument('machineId', InputArgument::REQUIRED);
+        $this->addArgument('machineId', InputArgument::OPTIONAL, '1');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        /** @var string $machineId */
+        $machineId = $input->getArgument('machineId');
+
         $coins = $this->returnCoint->execute(
-            new ReturnCoinsCommand(machineId: (int) $input->getArgument('machineId')),
+            new ReturnCoinsCommand(machineId: \intval($machineId)),
         );
 
         $output->writeln('Returned coins:');
 
         foreach ($coins as $coin) {
-            $output->writeln($coin);
+            $output->writeln("{$coin}");
         }
 
         return Command::SUCCESS;

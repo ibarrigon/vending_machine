@@ -21,6 +21,7 @@ final readonly class VendingMachineMapper
         $coinMachine = CoinMachine::load(
             $this->mapChangeToDomain($record->changeInventory()),
             $this->mapInsertedCoinsToDomain($record->insertedCoins()),
+            $record->retainedCash(),
         );
 
         return VendingMachine::load(
@@ -32,52 +33,47 @@ final readonly class VendingMachineMapper
 
     public function hydrateRecord(VendingMachine $machine, VendingMachineRecord $record): void
     {
-        $record->setSlots(
-            $this->mapSlotsToPersistence($machine->slots())
-        );
-
-        $record->setChangeInventory(
-            $this->mapChangeToPersistence($machine->coinMachine()->changeBox())
-        );
-
-        $record->setInsertedCoins(
-            $this->mapInsertedCoinsToPersistence($machine->coinMachine()->insertedCoins())
-        );
+        $record->setSlots($this->mapSlotsToPersistence($machine->slots()));
+        $record->setChangeInventory($this->mapChangeToPersistence($machine->coinMachine()->changeBox()));
+        $record->setInsertedCoins($this->mapInsertedCoinsToPersistence($machine->coinMachine()->insertedCoins()));
+        $record->setRetainedCash($machine->coinMachine()->retainedCash());
     }
 
     /**
-     * @param array<int, array{product: string, price: int, quantity: int}> $slots
+     * @param list<array{product: string, price: int, quantity: int}> $slots
      *
-     * @return list<Slot>
+     * @return array<string, Slot>
      */
     private function mapSlotsToDomain(array $slots): array
     {
-        return array_map(
-            fn (array $slot) => new Slot(
-                product: new Product(
-                    ProductType::from($slot['product']),
-                    $slot['price']
-                ),
-                quantity: $slot['quantity']
-            ),
-            $slots
-        );
+        $mapped = [];
+
+        foreach ($slots as $slot) {
+            $mapped[$slot['product']] = new Slot(
+                product: new Product(ProductType::from($slot['product']), $slot['price']),
+                quantity: $slot['quantity'],
+            );
+        }
+
+        return $mapped;
     }
 
     /**
-     * @param list<Slot> $slots
+     * @param array<string, Slot> $slots
      *
      * @return list<array{product: string, price: int, quantity: int}>
      */
     private function mapSlotsToPersistence(array $slots): array
     {
-        return array_map(
-            fn (Slot $slot) => [
-                'product' => $slot->product()->type->value,
-                'price' => $slot->product()->price,
-                'quantity' => $slot->quantity(),
-            ],
-            $slots
+        return array_values(
+            array_map(
+                fn (Slot $slot) => [
+                    'product' => $slot->product()->type->value,
+                    'price' => $slot->product()->price,
+                    'quantity' => $slot->quantity(),
+                ],
+                $slots
+            )
         );
     }
 
@@ -90,15 +86,12 @@ final readonly class VendingMachineMapper
     }
 
     /**
-     * @param array<int, int> $data
+     * @param list<int> $data
      */
     private function mapInsertedCoinsToDomain(array $data): InsertedCoins
     {
         return InsertedCoins::load(
-            array_map(
-                fn (int $value) => Coin::from($value),
-                $data
-            )
+            array_map(fn (int $value) => Coin::from($value), $data)
         );
     }
 
@@ -107,9 +100,8 @@ final readonly class VendingMachineMapper
      */
     private function mapInsertedCoinsToPersistence(InsertedCoins $coins): array
     {
-        return array_map(
-            fn (Coin $coin) => $coin->value,
-            $coins->coins()
+        return array_values(
+            array_map(fn (Coin $coin) => $coin->value, $coins->coins())
         );
     }
 

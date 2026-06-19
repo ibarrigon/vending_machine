@@ -2,12 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\VendingMachine\Infrastructure\Mapper\Doctrine;
+namespace App\VendingMachine\Infrastructure\Persistence\Doctrine;
 
 use App\VendingMachine\Application\VendingMachineRepositoryInterface;
 use App\VendingMachine\Domain\VendingMachine;
 use App\VendingMachine\Infrastructure\Persistence\Doctrine\Entity\VendingMachineRecord;
-use App\VendingMachine\Infrastructure\Persistence\Doctrine\MachineNotFoundException;
 use App\VendingMachine\Infrastructure\Persistence\Doctrine\Mapper\VendingMachineMapper;
 use Doctrine\ORM\EntityManagerInterface;
 
