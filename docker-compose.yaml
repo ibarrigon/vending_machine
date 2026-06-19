@@ -35,6 +35,10 @@ services:
 
     container_name: vending_mysql
 
+    build:
+      context: .
+      dockerfile: docker/mysql/Dockerfile
+
     environment:
       MYSQL_DATABASE: vending_machine
       MYSQL_USER: vending
