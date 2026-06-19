@@ -1,13 +1,14 @@
-# How to start
+# How to Start
 
 [< Go back](../README.md)
 
 ## Makefile
 
-(For Windows wsl is required)
-I provide a make use some commands more easily.
+(For Windows, WSL is required.)
 
-You can execute ``make`` or ``make help`` and found the commands to execute
+I provide a Makefile to make some commands easier to use.
+
+You can execute `make` or `make help` to see the available commands.
 
 ## Start
 
@@ -15,43 +16,148 @@ You can execute ``make`` or ``make help`` and found the commands to execute
 make init
 ```
 
-With this command you initialize de environment. Docker build, generate database
+With this command you initialize the environment. It builds the Docker containers and generates the database.
 
-## Test
+### Note
+
+During the installation process, I added the following command:
+
+```console
+$(COMPOSE) exec app git config --global --add safe.directory /app
+```
+
+The reason is that I encountered an error, and this was the easiest and fastest way to resolve it. You may want to remove it.
+
+From my experience and after "talking" with my friend SkyNet (movie reference, you know what I mean), we concluded that it is probably related to working on Windows.
+
+## Tests
 
 ```console
 make test
 ```
 
-This execute all the test, but maybe you don't want to do that, ¿maybe only unit test?
+This executes all tests, but maybe you do not want to run all of them. Perhaps you only want to run the unit tests?
 
 ```console
 make test-unit
 ```
 
-I have a bit of a conflict with this test. Well, in this case, it's good enought, but normally I prefer what I is named as
-component test. For example, We have a VendigMachine, isn't it? Well, this machine has a CoinMachine inside, this box, never 
-works out of the VendingMachine, then (for me) why unit test? maybe it's better to test how they interact as a total component?
+I have mixed feelings about this type of test. In this case, it is good enough, but in general I usually prefer what I call component tests.
 
-Ok, now, nots this case, I know CoinMachine its "inside", but we can test it with much effort. I'm 100% on it in this case. I don't 
-know if I explain well. Oh! but that's my opinion. Obviously, as a group, I do what everyone make a rule.
+For example, we have a `VendingMachine`, right? This machine contains a `CoinMachine`. If the `CoinMachine` never works independently from the `VendingMachine`, then why focus on unit tests? Would it not be more useful to test how both parts interact as a complete component?
 
-Next, I generate other commands:
+However, that is not the case here. The `CoinMachine` is isolated enough that testing it separately does not require much effort, so I am completely fine with unit tests in this situation.
 
-1. Functional test
+I am not sure if I explained myself well, but that is my personal opinion. Of course, when working in a team, I follow the rules and conventions agreed upon by everyone.
+
+I also added other testing commands:
+
+### Functional Tests
 
 ```console
 make test-functional
 ```
 
-
-
-2. Integration test. 
+### Integration Tests
 
 ```console
 make test-integration
 ```
 
-Here is the most slow ones becouse it depends on a DB on memory, with SQL Lite, but requires to 
-generate all the schema every time. I don't really like this ones in PHP. I prefer to use Cypress (I only use it twice, but
-I think its really good enought).
+These are the slowest tests because they depend on an in-memory database using SQLite. They also require the schema to be generated every time they are executed.
+
+I do not particularly like this type of test in PHP. I generally prefer using Cypress. I have only used it a couple of times, but I think it is a really good tool.
+
+### Coverage
+
+```console
+make coverage
+```
+
+This command generates the code coverage report.
+
+## Quality Code
+
+The following commands are available to verify code quality:
+
+### PHP CS Fixer
+
+```console
+make cs
+```
+
+Automatically fixes coding style issues.
+
+```console
+make cs-dry
+```
+
+Checks coding style issues without modifying any files.
+
+### PHPStan
+
+```console
+make phpstan
+```
+
+Runs static analysis on the project.
+
+### Quality
+
+```console
+make quality
+```
+
+Runs all available quality checks.
+
+## More Commands
+
+```console
+make build
+```
+
+Build Docker images.
+
+```console
+make install
+```
+
+Runs `composer install`.
+
+```console
+make up
+```
+
+For example, after restarting your computer...
+
+```console
+make down
+```
+
+You probably won't need this for now.
+
+```console
+make clear
+```
+
+Clears the Symfony cache.
+
+```console
+make kill
+```
+
+Maybe you want to remove everything related to the project — at least the Docker containers... this is the one.
+
+## For DB
+
+```console
+make db-init
+```
+
+Generate the database only if it does not exist previously.
+
+```console
+make db-reset
+```
+
+As the name suggests... recreates the database.

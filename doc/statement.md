@@ -1,6 +1,7 @@
+# Senior Backend Engineer challenge
+
 [< Go back](../README.md)
 
-# Senior Backend Engineer challenge
 ## Vending Machine
 
 The goal of this program is to model a vending machine and the state it must maintain during its operation. How exactly the actions on the machine are driven is left intentionally vague and is up to the candidate
@@ -36,7 +37,8 @@ Think of this as a foundation that other engineers will build upon, extend, and 
 * Currently inserted money
 
 ## Examples
-```
+
+```console
 Example 1: Buy Soda with exact change
 1, 0.25, 0.25, GET-SODA
 -> SODA
@@ -57,12 +59,14 @@ This is a **senior-level** technical assessment. We're not just evaluating if th
 ## Core Expectations
 
 ### Code Quality & Architecture
+
 * Your solution should reflect production-ready code that scales beyond the initial requirements
 * Consider how your design handles change: What if we need to add new products? New functionalities? New business rules?
 * Structure your code as if multiple engineers will need to understand, extend, and maintain it
 * Show us how you organize complex business logic in a way that remains clear and testable
 
 ### Technical Requirements
+
 * Programming language: **PHP**
 * Solution with `Dockerfile` or `docker-compose` is highly appreciated for easy evaluation
 * Comprehensive test coverage is **expected**. Your tests should demonstrate your understanding of what and how to test at different levels
@@ -71,6 +75,7 @@ This is a **senior-level** technical assessment. We're not just evaluating if th
 ## What Gets Evaluated
 
 We will assess your submission based on:
+
 1. **Architectural decisions**: how you structure and organize your code
 2. **Code maintainability**: readability, clarity, and how easy it is for others to work with your code
 3. **Extensibility**: how well your design accommodates future changes
@@ -91,12 +96,14 @@ Remember: We're hiring for a **senior position** in a **large engineering organi
 **AI tools are welcome.** At Holded, we embrace AI as part of our daily development workflow, and we expect senior engineers to leverage these tools effectively.
 
 However, keep in mind:
+
 * You will need to **defend your solution in a technical interview**
 * We will ask you to explain your architectural decisions, trade-offs, and implementation details
 * We'll explore alternative approaches and how you'd handle different scenarios
 * The code you submit should reflect **your understanding**, not just AI-generated output
 
 **Think of AI as your pair programming partner**, not a replacement for your engineering judgment. We want to see that you can:
+
 - Make informed architectural decisions
 - Understand the code you're submitting deeply
 - Articulate why you chose one approach over another
@@ -107,9 +114,10 @@ Your submission should represent code you **deeply understand** and can **confid
 If you use AI tools, use them as a senior engineer would: to accelerate implementation, explore options, and validate ideas—but always with your expertise guiding the decisions.
 
 # Additional Notes
+
 * The provided solutions needs to be uploaded into a public repository (Github, Gitlab, bitbucket) with a README.MD providing the following information.
-    * Instructions on how to run your solution
-    * Requirements
+  * Instructions on how to run your solution
+  * Requirements
 * Please make sure the name **Holded** are not referenced in any place in your code.
 * Commit from the very beginning and commit often. We value the possibility to review your git log.
 * **Prepare to defend your work**: During the technical interview, we'll may do a deep-dive into your solution. You should be able to explain every architectural decision, discuss alternatives you considered, and walk through how you'd extend the system for new requirements.

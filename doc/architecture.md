@@ -1,5 +1,7 @@
 # Architecture
 
+[< Go back](../README.md)
+
 Sorry, I put some effort here into explaining why and how I decided what to do (or not do), but it's too short to really explain everything that came up while I was evolving the code (like a Pokémon, sorry for the joke).
 
 I really didn't make the commits in the proper order... Do you know when something takes 3 hours of work, but it feels like only 5 minutes to you?
@@ -18,9 +20,7 @@ I use Doctrine to read from and save to the database, but I don't like migration
 
 Obviously, I can work with migrations too, but here I preferred to be a bit old-school.
 
-Everybody knows that floating-point arithmetic is a pain. The first thing I did was use cents. That way I can completely avoid those issues.
-
-Ah! Then I only need to convert values to decimals in the output.
+Everybody knows that floating-point arithmetic is a pain. The first thing I did was use cents becouse that way I can completely avoid those issues. Ah! Then I only need to convert values to decimals in the output.
 
 ## Domain
 
@@ -82,3 +82,15 @@ We can say this is the "metal" part of the project, and one that can be replaced
 For example, today we use MySQL, but maybe MariaDB would be enough, or perhaps PostgreSQL would be preferred... or maybe we have an AS/400 and can connect to that hardcore system instead (I know because I've done it).
 
 Ah! This is also where docker-compose finds its alma mater 😅
+
+## Improvements
+
+In every UseCase, you can find this:
+
+```PHP
+        } catch (Throwable $e) {
+            // TODO: Implement diferents exceptions and if machine becomes unavailable, set state as out of order
+            throw $e;
+```
+
+If we want to deploy to production, this "TODO" needs to be implemented, with two variants. Clients gets "Out of order" but Tecnics recibes an inform about what happends. This requires some more iterations.
