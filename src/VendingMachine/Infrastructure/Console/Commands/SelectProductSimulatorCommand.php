@@ -10,10 +10,12 @@ use App\VendingMachine\Infrastructure\Console\VendingMachineCliSimulator;
 
 final readonly class SelectProductSimulatorCommand implements SimulatorCommand
 {
-    public function __construct(private ProductType $product) {}
-
-    public function execute(int $machineId, VendingMachineCliSimulator $simulator): void
+    public function __construct(private ProductType $product)
     {
-        $simulator->selectProduct($machineId, $this->product);
+    }
+
+    public function execute(VendingMachineCliSimulator $simulator): void
+    {
+        $simulator->selectProduct($this->product);
     }
 }

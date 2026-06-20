@@ -38,7 +38,7 @@ final class VendingMachineScriptParser
             return new SelectProductSimulatorCommand($product);
         }
 
-        if ($token === 'RETURN') {
+        if ('RETURN' === $token) {
             return new ReturnCoinsSimulatorCommand();
         }
 
@@ -52,7 +52,7 @@ final class VendingMachineScriptParser
         $coin = Coin::tryFrom($coinValue);
 
         if (null === $coin) {
-            throw new \InvalidArgumentException("Invalid coin");
+            throw new \InvalidArgumentException('Invalid coin');
         }
 
         return $coin;

@@ -20,7 +20,7 @@ final class VendingMachineEdgeCasesTest extends TestCase
         $machine->insertCoin(Coin::TEN_CENTS); // 60
         $machine->insertCoin(Coin::FIVE_CENTS); // 65
         // We know this price. Maybe we can improbe this test with factory values?
-        
+
         $result = $machine->selectProduct(ProductType::WATER);
 
         $this->assertSame(ProductType::WATER, $result->product);

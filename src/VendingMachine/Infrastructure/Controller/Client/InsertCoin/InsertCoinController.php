@@ -72,7 +72,7 @@ final class InsertCoinController extends AbstractController
                 new InsertCoinCommand(
                     machineId: 1,
                     coin: $request->coin
-                    ),
+                ),
             );
 
             return new JsonResponse(['status' => 'ok'], Response::HTTP_OK);

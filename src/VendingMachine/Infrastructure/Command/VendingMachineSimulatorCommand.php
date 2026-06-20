@@ -13,14 +13,14 @@ use Symfony\Component\Console\Output\OutputInterface;
 final class VendingMachineSimulatorCommand extends Command
 {
     public function __construct(
-        private VendingMachineCliSimulator $simulator
+        private VendingMachineCliSimulator $simulator,
     ) {
         parent::__construct();
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        /** @var string $selector */
+        /** @var string $script */
         $script = $input->getArgument('script');
 
         $this->simulator->run($script);

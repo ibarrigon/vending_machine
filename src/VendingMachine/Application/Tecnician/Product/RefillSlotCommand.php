@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\VendingMachine\Application\Tecnician\Product;
 
-
 final readonly class RefillSlotCommand
 {
     public function __construct(

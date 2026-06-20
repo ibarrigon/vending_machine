@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types= 1);
+declare(strict_types=1);
 
 namespace App\VendingMachine\Infrastructure\Console\Commands;
 
@@ -10,7 +10,9 @@ use App\VendingMachine\Infrastructure\Console\VendingMachineCliSimulator;
 
 final readonly class InsertCoinSimulatorCommand implements SimulatorCommand
 {
-    public function __construct(private Coin $coin) {}
+    public function __construct(private Coin $coin)
+    {
+    }
 
     public function execute(VendingMachineCliSimulator $simulator): void
     {

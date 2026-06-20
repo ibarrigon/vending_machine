@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types= 1);
+declare(strict_types=1);
 
 namespace App\VendingMachine\Infrastructure\Command;
 
@@ -21,30 +21,31 @@ final class VendingMachineReplCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $machineId = 1;
-
         $output->writeln('Vending Machine REPL started');
         $output->writeln('Commands: coins, GET-SODA (GET-<product>), RETURN, SHUTDOWN');
 
         $stdin = fopen('php://stdin', 'r');
+        if (false === $stdin) {
+            return Command::FAILURE;
+        }
 
         while (true) {
             $line = fgets($stdin);
 
-            if ($line === false) {
+            if (false === $line) {
                 break;
             }
 
             $line = trim($line);
 
-            if ($line === 'SHUTDOWN') {
+            if ('SHUTDOWN' === $line) {
                 break;
             }
 
             try {
                 $this->simulator->run($line);
             } catch (\Throwable $e) {
-                $output->writeln('<error>' . $e->getMessage() . '</error>');
+                $output->writeln('<error>'.$e->getMessage().'</error>');
             }
         }
 

@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types= 1);
+declare(strict_types=1);
 
 namespace App\VendingMachine\Infrastructure\Console;
 
@@ -20,7 +20,8 @@ final class VendingMachineCliSimulator
         private SelectProductUseCase $selectProduct,
         private ReturnCoinsUseCase $returnCoins,
         private VendingMachineScriptParser $parser,
-    ) {}
+    ) {
+    }
 
     public function run(string $input): void
     {

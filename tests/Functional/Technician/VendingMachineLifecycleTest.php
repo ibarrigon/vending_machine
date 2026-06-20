@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types= 1);
+declare(strict_types=1);
 
 namespace App\Tests\Functional\Technician;
 
@@ -31,14 +31,29 @@ final class VendingMachineLifecycleTest extends KernelTestCase
 
         $container = self::getContainer();
 
-        $this->repository = $container->get(VendingMachineRepositoryInterface::class);
-        $this->open = $container->get(OpenMachineUseCase::class);
-        $this->close = $container->get(CloseMachineUseCase::class);
-        
-        $this->refillSlot = $container->get(RefillSlotUseCase::class);
-        $this->refillChange = $container->get(RefillChangeUseCase::class);
+        /** @var VendingMachineRepositoryInterface $repository */
+        $repository = $container->get(VendingMachineRepositoryInterface::class);
+        $this->repository = $repository;
 
-        $this->reset = $container->get(ResetCreditUseCase::class);
+        /** @var OpenMachineUseCase $open */
+        $open = $container->get(OpenMachineUseCase::class);
+        $this->open = $open;
+
+        /** @var CloseMachineUseCase $close */
+        $close = $container->get(CloseMachineUseCase::class);
+        $this->close = $close;
+
+        /** @var RefillSlotUseCase $refillSlot */
+        $refillSlot = $container->get(RefillSlotUseCase::class);
+        $this->refillSlot = $refillSlot;
+
+        /** @var RefillChangeUseCase $refillChange */
+        $refillChange = $container->get(RefillChangeUseCase::class);
+        $this->refillChange = $refillChange;
+
+        /** @var ResetCreditUseCase $reset */
+        $reset = $container->get(ResetCreditUseCase::class);
+        $this->reset = $reset;
     }
 
     public function testTecnicianWork(): void

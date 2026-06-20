@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types= 1);
+declare(strict_types=1);
 
 namespace App\VendingMachine\Infrastructure\Console\Commands;
 
@@ -9,8 +9,8 @@ use App\VendingMachine\Infrastructure\Console\VendingMachineCliSimulator;
 
 final readonly class ReturnCoinsSimulatorCommand implements SimulatorCommand
 {
-    public function execute(int $machineId, VendingMachineCliSimulator $simulator): void
+    public function execute(VendingMachineCliSimulator $simulator): void
     {
-        $simulator->returnCoins($machineId);
+        $simulator->returnCoins();
     }
 }

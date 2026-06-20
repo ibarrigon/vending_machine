@@ -131,7 +131,7 @@ final class VendingMachine
             ->refill();
     }
 
-    public function refillChange(Coin $coin, int $quantity): RefillResult 
+    public function refillChange(Coin $coin, int $quantity): RefillResult
     {
         return $this->coinMachine->refill(
             $coin,
