@@ -18,6 +18,9 @@ final class VendingMachineFlowTest extends TestCase
         $machine = VendingMachineFactory::create();
 
         $machine->insertCoin(Coin::ONE_EURO);
+        $machine->insertCoin(Coin::TWENTY_FIVE_CENTS);
+        $machine->insertCoin(Coin::TWENTY_FIVE_CENTS);
+        // We know how the price of SODA (fabric preset)
 
         $result = $machine->selectProduct(ProductType::SODA);
 
@@ -28,7 +31,9 @@ final class VendingMachineFlowTest extends TestCase
 
     public function testUserReceivesChangeWhenOverpaying(): void
     {
-        $machine = VendingMachineFactory::withChange([25 => 2, 10 => 2]);
+        $machine = VendingMachineFactory::withChange(
+            [Coin::TWENTY_FIVE_CENTS->value => 2, Coin::TEN_CENTS->value => 2]
+        );
 
         $machine->insertCoin(Coin::ONE_EURO);
 

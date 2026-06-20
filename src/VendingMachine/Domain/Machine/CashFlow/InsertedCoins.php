@@ -9,7 +9,7 @@ use App\VendingMachine\Domain\Coin\Coin;
 final readonly class InsertedCoins
 {
     /** @param Coin[] $coins */
-    public function __construct(
+    private function __construct(
         private array $coins = [],
     ) {
     }

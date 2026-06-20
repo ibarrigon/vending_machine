@@ -9,11 +9,12 @@ use App\VendingMachine\Domain\Machine\CashFlow\ChangeBox;
 use App\VendingMachine\Domain\Machine\CashFlow\CoinMachine;
 use App\VendingMachine\Domain\Machine\CashFlow\InsertedCoins;
 use App\VendingMachine\Domain\Machine\CashFlow\InsufficientFundsException;
-use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 final class CoinMachineTest extends TestCase
 {
+    private const MAX_COINS = 200;
+
     public function testItStartsEmpty(): void
     {
         $machine = CoinMachine::load(ChangeBox::empty(), InsertedCoins::empty());
@@ -40,6 +41,7 @@ final class CoinMachineTest extends TestCase
         $coins = $machine->returnCoins();
 
         $this->assertSame([Coin::ONE_EURO], $coins);
+        $this->assertFalse($machine->hasInsertedCoins());
     }
 
     public function testItFailsWhenInsufficientFunds(): void
@@ -52,89 +54,185 @@ final class CoinMachineTest extends TestCase
         $machine->purchase(100);
     }
 
-    /**
-     * @param list<Coin> $coins
-     */
-    #[DataProvider('coinSequencesProvider')]
-    public function testNoMoneyIsLost(array $coins, int $price): void
+    public function testPurchaseWithExactAmount(): void
+    {
+        $machine = CoinMachine::load(
+            ChangeBox::empty(),
+            InsertedCoins::empty(),
+        );
+
+        $machine->insertCoin(Coin::ONE_EURO);
+
+        $result = $machine->purchase(100);
+
+        $this->assertSame([], $result->change);
+        $this->assertSame(0, $result->retainedCash);
+        $this->assertSame(0, $machine->retainedCash());
+        $this->assertFalse($machine->hasInsertedCoins());
+    }
+
+    public function testPurchaseReturnsChangeWhenAvailable(): void
+    {
+        $changeBox = ChangeBox::load([
+            Coin::TWENTY_FIVE_CENTS->value => 4,
+        ]);
+
+        $machine = CoinMachine::load(
+            $changeBox,
+            InsertedCoins::empty(),
+        );
+
+        $machine->insertCoin(Coin::ONE_EURO);
+
+        $result = $machine->purchase(75);
+
+        $this->assertCount(1, $result->change);
+        $this->assertSame(
+            Coin::TWENTY_FIVE_CENTS,
+            $result->change[0]
+        );
+
+        $this->assertSame(0, $result->retainedCash);
+    }
+
+    public function testPurchaseKeepsCreditWhenChangeCannotBeReturned(): void
+    {
+        $machine = CoinMachine::load(
+            ChangeBox::empty(),
+            InsertedCoins::empty(),
+        );
+
+        $machine->insertCoin(Coin::ONE_EURO);
+
+        $result = $machine->purchase(75);
+
+        $this->assertSame([], $result->change);
+        $this->assertSame(25, $result->retainedCash);
+
+        $this->assertSame(25, $machine->retainedCash());
+    }
+
+    public function testPurchaseClearsInsertedCoins(): void
+    {
+        $machine = CoinMachine::load(
+            ChangeBox::empty(),
+            InsertedCoins::empty(),
+        );
+
+        $machine->insertCoin(Coin::ONE_EURO);
+
+        $machine->purchase(75);
+
+        $this->assertFalse($machine->hasInsertedCoins());
+        $this->assertSame(
+            0,
+            $machine->insertedCoins()->total()
+        );
+    }
+
+    public function testRetainedCreditIsUsedInFollowingPurchase(): void
+    {
+        $machine = CoinMachine::load(
+            ChangeBox::empty(),
+            InsertedCoins::empty(),
+        );
+
+        $machine->insertCoin(Coin::ONE_EURO);
+
+        $machine->purchase(75);
+
+        $this->assertSame(25, $machine->retainedCash());
+
+        $machine->insertCoin(Coin::TWENTY_FIVE_CENTS);
+
+        $this->assertSame(50, $machine->retainedCash());
+    }
+
+    public function testResetRetainedCash(): void
+    {
+        $machine = CoinMachine::load(ChangeBox::empty(), InsertedCoins::empty(), 50);
+
+        $machine->resetRetainedCash();
+
+        $this->assertSame(0, $machine->retainedCash());
+    }
+
+    public function testRefillUpdatesMachineChangeBox(): void
     {
         $machine = CoinMachine::load(ChangeBox::empty(), InsertedCoins::empty());
 
-        $initialValue = $this->sumCoins($coins);
+        $result = $machine->refill(Coin::TEN_CENTS, 5);
 
-        foreach ($coins as $coin) {
-            $machine->insertCoin($coin);
-        }
-
-        try {
-            $result = $machine->purchase($price);
-
-            $changeValue = $this->sumCoins($result->change);
-            $remain = $machine->insertedAmount();
-
-            $this->assertGreaterThanOrEqual(0, $changeValue);
-            $this->assertGreaterThanOrEqual(0, $remain);
-
-            $this->assertSame($initialValue, $price + $changeValue + $remain);
-        } catch (InsufficientFundsException) {
-            $this->assertTrue(true);
-        }
+        $this->assertSame(5, $result->accepted);
+        $this->assertSame(5, $machine->changeBox()->quantityOf(Coin::TEN_CENTS));
     }
 
-    /**
-     * @param list<Coin> $coins
-     */
-    #[DataProvider('coinSequencesProvider')]
-    public function testPurchaseIsDeterministic(array $coins, int $price): void
+    public function testResetEmptyAllCreditInsideMachine(): void
     {
-        $m1 = CoinMachine::load(ChangeBox::empty(), InsertedCoins::empty());
-        $m2 = CoinMachine::load(ChangeBox::empty(), InsertedCoins::empty());
+        $machine = CoinMachine::load(ChangeBox::load([Coin::TEN_CENTS->value => 100]), InsertedCoins::empty(), 50);
+        $machine->insertCoin(Coin::ONE_EURO);
+        $this->assertNotEquals(0, $machine->retainedCash());
+        $this->assertNotEquals(0, $machine->changeBox()->quantityOf(Coin::TEN_CENTS));
+        $this->assertTrue($machine->hasInsertedCoins());
 
-        foreach ($coins as $c) {
-            $m1->insertCoin($c);
-            $m2->insertCoin($c);
-        }
+        $machine->reset();
 
-        try {
-            $r1 = $m1->purchase($price);
-            $r2 = $m2->purchase($price);
-
-            $this->assertEquals($r1, $r2);
-        } catch (InsufficientFundsException) {
-            $this->assertTrue(true);
-        }
+        $this->assertSame(0, $machine->retainedCash());
+        $this->assertSame(0, $machine->changeBox()->quantityOf(Coin::TEN_CENTS));
+        $this->assertFalse($machine->hasInsertedCoins());
     }
 
-    /**
-     * @return iterable<int, array{list<Coin>, int}>
-     */
-    public static function coinSequencesProvider(): iterable
+    public function testItRefillsTheChangeBox(): void
     {
-        $cases = Coin::cases();
+        $machine = CoinMachine::load(ChangeBox::empty(), InsertedCoins::empty());
 
-        for ($i = 0; $i < 50; ++$i) {
-            $sequence = [];
+        $result = $machine->refill(Coin::TWENTY_FIVE_CENTS, 5);
 
-            $length = random_int(1, 10);
+        $this->assertSame(Coin::TWENTY_FIVE_CENTS, $result->coin);
 
-            for ($j = 0; $j < $length; ++$j) {
-                $sequence[] = $cases[array_rand($cases)];
-            }
+        $this->assertSame(5, $result->accepted);
+        $this->assertSame(0, $result->rejected);
+        $this->assertSame(5, $result->currentQuantity);
 
-            /* @var list<Coin> $sequence */
-            yield [$sequence, random_int(0, 300)];
-        }
+        $this->assertSame(5, $machine->changeBox()->coins()[Coin::TWENTY_FIVE_CENTS->value]);
     }
 
-    /**
-     * @param list<Coin> $coins
-     */
-    private function sumCoins(array $coins): int
+    public function testRefillUpdatesInternalChangeBox(): void
     {
-        return array_reduce(
-            $coins,
-            static fn (int $carry, Coin $coin): int => $carry + $coin->value,
-            0
+        $machine = CoinMachine::load(ChangeBox::empty(), InsertedCoins::empty());
+
+        $machine->refill(Coin::TEN_CENTS, 3);
+
+        $machine->refill(Coin::TEN_CENTS, 2);
+
+        $this->assertSame(5, $machine->changeBox()->coins()[Coin::TEN_CENTS->value]);
+    }
+
+    public function testRefillAddsCoinsToChangeBox(): void
+    {
+        $machine = CoinMachine::load(ChangeBox::empty(), InsertedCoins::empty());
+
+        $result = $machine->refill(Coin::TEN_CENTS, 5);
+
+        $this->assertSame(5, $result->accepted);
+        $this->assertSame(0, $result->rejected);
+        $this->assertSame(5, $result->currentQuantity);
+
+        $this->assertSame(5, $machine->changeBox()->coins()[Coin::TEN_CENTS->value]);
+    }
+
+    public function testRefillPartiallyAcceptsCoinsWhenCapacityIsReached(): void
+    {
+        $machine = CoinMachine::load(
+            ChangeBox::empty(),
+            InsertedCoins::empty(),
         );
+
+        $machine->refill(Coin::TEN_CENTS, self::MAX_COINS - 3);
+        $result = $machine->refill(Coin::TEN_CENTS, 10);
+
+        $this->assertSame(3, $result->accepted);
+        $this->assertSame(7, $result->rejected);
+        $this->assertSame(self::MAX_COINS, $result->currentQuantity);
     }
 }

@@ -131,10 +131,8 @@ final class VendingMachine
             ->refill();
     }
 
-    public function refillChange(
-        Coin $coin,
-        int $quantity,
-    ): RefillResult {
+    public function refillChange(Coin $coin, int $quantity): RefillResult 
+    {
         return $this->coinMachine->refill(
             $coin,
             $quantity,
@@ -146,6 +144,11 @@ final class VendingMachine
         $this->state = MachineState::IN_MAINTENANCE;
     }
 
+    public function isOpen(): bool
+    {
+        return MachineState::IN_MAINTENANCE === $this->state;
+    }
+
     public function close(): void
     {
         $this->state = MachineState::IDLE;
@@ -154,6 +157,11 @@ final class VendingMachine
     public function canBeRefilled(): bool
     {
         return MachineState::IN_MAINTENANCE === $this->state;
+    }
+
+    public function isReady(): bool
+    {
+        return MachineState::IN_MAINTENANCE !== $this->state;
     }
 
     public function isInMaintenance(): bool
@@ -189,7 +197,7 @@ final class VendingMachine
         return $this->coinMachine;
     }
 
-    private function slotByProduct(ProductType $product): SlotState
+    public function slotByProduct(ProductType $product): SlotState
     {
         if (!isset($this->slots[$product->value])) {
             throw new ProductNotFoundException();

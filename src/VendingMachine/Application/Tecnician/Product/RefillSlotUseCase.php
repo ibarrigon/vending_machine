@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\VendingMachine\Application\Tecnician\Product;
 
 use App\VendingMachine\Application\VendingMachineRepositoryInterface;
+use App\VendingMachine\Domain\Catalog\InvalidProductException;
+use App\VendingMachine\Domain\Catalog\ProductType;
 use App\VendingMachine\Domain\Machine\State\InvalidMachineStateException;
 use Symfony\Component\Lock\LockFactory;
 
@@ -26,7 +28,13 @@ final class RefillSlotUseCase
             if (!$machine->canBeRefilled()) {
                 throw new InvalidMachineStateException();
             }
-            $machine->refillSlot($command->product);
+
+            $product = ProductType::tryFrom($command->product);
+            if (null === $product) {
+                throw new InvalidProductException();
+            }
+
+            $machine->refillSlot($product);
 
             $this->repository->save($machine);
         } catch (\Throwable $e) {

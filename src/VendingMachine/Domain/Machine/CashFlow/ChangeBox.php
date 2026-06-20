@@ -121,7 +121,7 @@ final readonly class ChangeBox
     }
 
     /**
-     * @return Coin[]
+     * @return list<Coin>
      */
     public function withdraw(int $amount): array
     {

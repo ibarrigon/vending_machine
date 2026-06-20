@@ -8,7 +8,6 @@ use App\VendingMachine\Application\Client\ReturnCoins\ReturnCoinsCommand;
 use App\VendingMachine\Application\Client\ReturnCoins\ReturnCoinsUseCase;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -20,15 +19,10 @@ final class ReturnCoinsCommandConsole extends Command
         parent::__construct();
     }
 
-    protected function configure(): void
-    {
-        $this->addArgument('machineId', InputArgument::OPTIONAL, '1');
-    }
-
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        /** @var string $machineId */
-        $machineId = $input->getArgument('machineId');
+        // TODO: If we have a machine farm, we can use a parameter to add machine id
+        $machineId = 1;
 
         $coins = $this->returnCoint->execute(
             new ReturnCoinsCommand(machineId: \intval($machineId)),

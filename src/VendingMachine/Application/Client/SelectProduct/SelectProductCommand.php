@@ -8,7 +8,7 @@ final readonly class SelectProductCommand
 {
     public function __construct(
         public readonly int $machineId,
-        public readonly string $product,
+        public readonly string $selector,
     ) {
     }
 }

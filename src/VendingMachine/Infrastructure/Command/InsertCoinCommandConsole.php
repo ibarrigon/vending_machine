@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\VendingMachine\Infrastructure\Console;
+namespace App\VendingMachine\Infrastructure\Command;
 
 use App\VendingMachine\Application\Client\InsertCoin\InsertCoinCommand;
 use App\VendingMachine\Application\Client\InsertCoin\InsertCoinUseCase;
@@ -23,21 +23,17 @@ final class InsertCoinCommandConsole extends Command
     protected function configure(): void
     {
         $this
-            ->addArgument('machineId', InputArgument::OPTIONAL, '1')
             ->addArgument('coin', InputArgument::REQUIRED);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        /** @var string $machineId */
-        $machineId = $input->getArgument('machineId');
-
         /** @var string $coin */
         $coin = $input->getArgument('coin');
 
         $this->insertCoin->execute(
             new InsertCoinCommand(
-                machineId: \intval($machineId),
+                machineId: 1,
                 coin: \intval($coin),
             )
         );

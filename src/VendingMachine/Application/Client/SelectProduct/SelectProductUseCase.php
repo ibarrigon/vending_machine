@@ -26,7 +26,7 @@ final readonly class SelectProductUseCase
 
         try {
             $machine = $this->repository->get($command->machineId);
-            $product = ProductType::fromSelector($command->product);
+            $product = ProductType::fromSelector($command->selector);
             if (null === $product) {
                 throw new InvalidProductException();
             }

@@ -64,16 +64,15 @@ final class InsertCoinController extends AbstractController
         description: 'Invalid coin',
     )]
     public function insertCoin(
-        int $id,
         #[MapRequestPayload]
         InsertCoinRequest $request,
     ): JsonResponse {
         try {
             $this->insertCoin->execute(
                 new InsertCoinCommand(
-                    machineId: $id,
-                    coin: $request->coin,
-                ),
+                    machineId: 1,
+                    coin: $request->coin
+                    ),
             );
 
             return new JsonResponse(['status' => 'ok'], Response::HTTP_OK);

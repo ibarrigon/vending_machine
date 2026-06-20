@@ -1,0 +1,13 @@
+.PHONY: execute examples interactive
+
+execute:
+	@$(COMPOSE) exec app php bin/console vending:sim SCRIPT="$(SCRIPT)"
+
+
+examples:
+	@$(MAKE) execute SCRIPT="1, 0.25, 0.25, GET-SODA"
+	@$(MAKE) execute SCRIPT="0.10, 0.10, RETURN-COIN"
+	@$(MAKE) execute SCRIPT="1, GET-WATER"
+
+interactive:
+	@$(COMPOSE) exec app php bin/console vending:repl

@@ -1,7 +1,7 @@
 ENV ?= dev
 
 ifeq ($(ENV),test)
-    COMPOSE := docker compose -f docker-compose.yml -f docker-compose.test.yml
+    COMPOSE := docker compose -f docker-compose.yaml -f docker-compose.test.yaml
 else
     COMPOSE := docker compose
 endif

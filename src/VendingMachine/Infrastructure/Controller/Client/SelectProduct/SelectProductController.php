@@ -76,15 +76,14 @@ final class SelectProductController extends AbstractController
         description: 'Product out of stock',
     )]
     public function select(
-        int $id,
         #[MapRequestPayload]
         SelectProductRequest $request,
     ): JsonResponse {
         try {
             $result = $this->selectProduct->execute(
                 new SelectProductCommand(
-                    machineId: $id,
-                    product: $request->product,
+                    machineId: 1,
+                    selector: $request->selector,
                 )
             );
 

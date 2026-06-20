@@ -5,3 +5,4 @@ include make/docker.mk
 include make/database.mk
 include make/test.mk
 include make/quality.mk
+include make/execute.mk

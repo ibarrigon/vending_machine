@@ -47,7 +47,7 @@ final class ChangeBoxPropertyTest extends TestCase
                 $this->assertGreaterThanOrEqual(0, $qty);
             }
         } catch (InsufficientChangeException) {
-            return;
+            $this->addToAssertionCount(1);
         }
     }
 
@@ -66,7 +66,7 @@ final class ChangeBoxPropertyTest extends TestCase
 
             $this->assertEquals($r1, $r2);
         } catch (InsufficientChangeException) {
-            return;
+            $this->addToAssertionCount(1);
         }
     }
 

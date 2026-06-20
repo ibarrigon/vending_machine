@@ -33,13 +33,13 @@ From my experience and after "talking" with my friend SkyNet (movie reference, y
 ## Tests
 
 ```console
-make test
+make test ENV=test
 ```
 
 This executes all tests, but maybe you do not want to run all of them. Perhaps you only want to run the unit tests?
 
 ```console
-make test-unit
+make test-unit ENV=test
 ```
 
 What you see it's what you get
@@ -49,18 +49,20 @@ I also added other testing commands:
 ### Functional Tests
 
 ```console
-make test-functional
+make test-functional ENV=test
 ```
 
 ### Integration Tests
 
 ```console
-make test-integration
+make test-integration ENV=test
 ```
 
-These are the slowest tests because they depend on an in-memory database using SQLite. They also require the schema to be generated every time they are executed.
+These are the slowest tests because they depend on a database.
 
-I do not particularly like this type of test in PHP. I generally prefer using Cypress. I have only used it a couple of times, but I think it is a really good tool.
+### E2E
+
+I don't do any of this test. I used Cypress, and in Atrapalo I executed Selenium and Behat test that another department created.
 
 ### Coverage
 

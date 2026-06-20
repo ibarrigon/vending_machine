@@ -49,10 +49,10 @@ final class ReturnCoinsController extends AbstractController
             ],
         )
     )]
-    public function returnCoins(int $id): JsonResponse
+    public function returnCoins(): JsonResponse
     {
         try {
-            $coins = $this->returnCoins->execute(new ReturnCoinsCommand($id));
+            $coins = $this->returnCoins->execute(new ReturnCoinsCommand(1));
 
             return new JsonResponse(['coins' => $this->transformer->transformList($coins)], Response::HTTP_OK);
         } catch (\Throwable $e) {

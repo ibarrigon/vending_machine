@@ -11,7 +11,7 @@ final readonly class SelectProductRequest
     public function __construct(
         #[Assert\NotBlank]
         #[Assert\Choice(['GET-WATER', 'GET-JUICE', 'GET-SODA'])]
-        public string $product,
+        public string $selector,
     ) {
     }
 }

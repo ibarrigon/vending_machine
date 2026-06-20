@@ -23,6 +23,11 @@ final class CoinMachine
         return new self($changeBox, $insertedCoins, $retainedCash);
     }
 
+    public static function empty(): self
+    {
+        return new self(ChangeBox::empty(), InsertedCoins::empty(), 0);
+    }
+
     public function insertCoin(Coin $coin): void
     {
         $this->insertedCoins = $this->insertedCoins->insert($coin);
@@ -46,9 +51,7 @@ final class CoinMachine
             throw new InsufficientFundsException();
         }
 
-        $candidateBox = $this->changeBox->addMany(
-            $this->insertedCoins->coins()
-        );
+        $candidateBox = $this->changeBox->addMany($this->insertedCoins->coins());
 
         $changeAmount = $this->retainedCash - $price;
 
@@ -112,5 +115,12 @@ final class CoinMachine
     public function resetRetainedCash(): void
     {
         $this->retainedCash = 0;
+    }
+
+    public function reset(): void
+    {
+        $this->changeBox = ChangeBox::empty();
+        $this->insertedCoins = InsertedCoins::empty();
+        $this->resetRetainedCash();
     }
 }
