@@ -33,13 +33,13 @@ From my experience and after "talking" with my friend SkyNet (movie reference, y
 ## Tests
 
 ```console
-make test ENV=test
+make test
 ```
 
 This executes all tests, but maybe you do not want to run all of them. Perhaps you only want to run the unit tests?
 
 ```console
-make test-unit ENV=test
+make test-unit
 ```
 
 What you see it's what you get
@@ -49,20 +49,16 @@ I also added other testing commands:
 ### Functional Tests
 
 ```console
-make test-functional ENV=test
+make test-functional
 ```
 
 ### Integration Tests
 
 ```console
-make test-integration ENV=test
+make test-integration
 ```
 
 These are the slowest tests because they depend on a database.
-
-### E2E
-
-I don't do any of this test. I used Cypress, and in Atrapalo I executed Selenium and Behat test that another department created.
 
 ### Coverage
 

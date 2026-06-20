@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\VendingMachine\Infrastructure\Console;
+namespace App\VendingMachine\Infrastructure\Command;
 
 use App\VendingMachine\Application\Client\ReturnCoins\ReturnCoinsCommand;
 use App\VendingMachine\Application\Client\ReturnCoins\ReturnCoinsUseCase;

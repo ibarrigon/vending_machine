@@ -36,8 +36,13 @@ However, that is not the case here. The `CoinMachine` is isolated enough that te
 I am not sure if I explained myself well, but that is my personal opinion. Of course, when working in a team, I follow the rules and conventions agreed upon by everyone.
 
 *And now...*
-What I mean is what you can find in "Functional test". Yes, obviously, you have less functional test than unit test, becouse the layer where you are working is superior, isn't it? I prefer this tests, but only if it completes all the routes (coverage) the code can be executed.
+I like "component" test or maybe "integration" test. From a superior layer, we test all the code inside every gauge in the system.
 
-## Integration
+## Integration and Functional
 
-I create some integration test, and for it, there is a BD, but not the same as normally use. Every time you execute the test, the BD is truncated to avoid problems.
+Her comes the last layer, harder and heavy. I only make some of this, but that depends the coverage and what we have in our system. 
+
+## E2E
+
+I don't do any of this test. I used Cypress, and in Atrapalo I executed Selenium and Behat test that another department created.
+
