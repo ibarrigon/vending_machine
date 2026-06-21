@@ -1,11 +1,15 @@
 nelmio_api_doc:
     documentation:
         info:
-            title: Vending Machine API
-            description: Vending Machine Technical Assessment
-            version: 1.0.0
+            title: "🧃 Vending Machine API"
+            version: "1.0.0"
+            description: "API for vending machine system"
 
-    areas:
-        default:
-            path_patterns:
-                - ^/api
+    html_config:
+        assets_mode: cdn
+        swagger_ui_config:
+            docExpansion: list
+            displayRequestDuration: true
+            filter: true
+            tryItOutEnabled: true
+            persistAuthorization: true

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\VendingMachine\Infrastructure\Command;
 
-use App\VendingMachine\Application\Client\SelectProduct\SelectProductCommand;
+use App\VendingMachine\Application\Client\Command\SelectProductCommand;
 use App\VendingMachine\Application\Client\SelectProduct\SelectProductUseCase;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -22,8 +22,7 @@ final class SelectProductCommandConsole extends Command
 
     protected function configure(): void
     {
-        $this
-            ->addArgument('selector', InputArgument::REQUIRED);
+        $this->addArgument('selector', InputArgument::REQUIRED);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int

@@ -11,16 +11,23 @@ final readonly class SlotState
     private const MAX_CAPACITY = 50;
     private const LOW_STOCK_THRESHOLD = 5;
 
-    public function __construct(
+    private function __construct(
         private ProductType $product,
         private int $quantity,
     ) {
-        if (
-            $quantity < 0
-            || $quantity > self::MAX_CAPACITY
-        ) {
+        if ($quantity < 0 || $quantity > self::MAX_CAPACITY) {
             throw new InvalidSlotQuantityException();
         }
+    }
+
+    public static function load(ProductType $product, int $quantity): self
+    {
+        return new self($product, self::MAX_CAPACITY);
+    }
+
+    public static function filledProduct(ProductType $product): self
+    {
+        return new self($product, self::MAX_CAPACITY);
     }
 
     public function product(): ProductType

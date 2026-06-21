@@ -7,6 +7,7 @@ namespace App\VendingMachine\Infrastructure\Command;
 use App\VendingMachine\Infrastructure\Console\VendingMachineCliSimulator;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -17,6 +18,11 @@ final class VendingMachineSimulatorCommand extends Command
         private VendingMachineCliSimulator $simulator,
     ) {
         parent::__construct();
+    }
+
+    protected function configure(): void
+    {
+        $this->addArgument('script', InputArgument::REQUIRED);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\VendingMachine\Application\Tecnician\Product;
+namespace App\VendingMachine\Application\Tecnician\Command;
 
 final readonly class RefillSlotCommand
 {

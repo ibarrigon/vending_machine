@@ -26,7 +26,7 @@ final class ResetCreditUseCase
             if (!$machine->isInMaintenance()) {
                 throw new InvalidMachineStateException();
             }
-            $machine->coinMachine()->reset();
+            $machine->resetConfiguration();
 
             $this->repository->save($machine);
         } catch (\Throwable $e) {

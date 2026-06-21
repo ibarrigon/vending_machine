@@ -115,28 +115,19 @@ final class VendingMachine
         }
 
         $coins = $this->coinMachine->returnCoins();
-
-        $this->state = MachineTransitionTable::eventTransition(
-            $this->state,
-            MachineEvent::RETURN_COINS,
-        );
+        $this->state = MachineTransitionTable::eventTransition($this->state, MachineEvent::RETURN_COINS);
 
         return $coins;
     }
 
     public function refillSlot(ProductType $product): void
     {
-        $this->slots[$product->value] = $this
-            ->slotByProduct($product)
-            ->refill();
+        $this->slots[$product->value] = SlotState::filledProduct($product);
     }
 
     public function refillChange(Coin $coin, int $quantity): RefillResult
     {
-        return $this->coinMachine->refill(
-            $coin,
-            $quantity,
-        );
+        return $this->coinMachine->refill($coin, $quantity);
     }
 
     public function open(): void
@@ -204,5 +195,15 @@ final class VendingMachine
         }
 
         return $this->slots[$product->value];
+    }
+
+    public function setConfiguration(Configuration $configuration): void
+    {
+        $this->configuration = $configuration;
+    }
+
+    public function resetConfiguration(): void
+    {
+        $this->configuration = Configuration::factorySettings();
     }
 }

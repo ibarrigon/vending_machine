@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace App\VendingMachine\Infrastructure\Console;
 
-use App\VendingMachine\Domain\Catalog\ProductType;
 use App\VendingMachine\Domain\Coin\Coin;
-use App\VendingMachine\Infrastructure\Console\Commands\InsertCoinSimulatorCommand;
-use App\VendingMachine\Infrastructure\Console\Commands\ReturnCoinsSimulatorCommand;
-use App\VendingMachine\Infrastructure\Console\Commands\SelectProductSimulatorCommand;
+use App\VendingMachine\Infrastructure\Console\Command\InsertCoinSimulatorCommand;
+use App\VendingMachine\Infrastructure\Console\Command\ReturnCoinsSimulatorCommand;
+use App\VendingMachine\Infrastructure\Console\Command\SelectProductSimulatorCommand;
 
 final class VendingMachineScriptParser
 {
@@ -34,10 +33,8 @@ final class VendingMachineScriptParser
             return new InsertCoinSimulatorCommand($this->mapCoin((float) $token));
         }
 
-        if ($product = ProductType::fromSelector($token)) {
-            return new SelectProductSimulatorCommand($product);
-        }
-
+        return new SelectProductSimulatorCommand($token);
+ 
         if ('RETURN' === $token) {
             return new ReturnCoinsSimulatorCommand();
         }

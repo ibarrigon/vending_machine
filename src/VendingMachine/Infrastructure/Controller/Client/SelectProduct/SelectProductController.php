@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\VendingMachine\Infrastructure\Controller\Client\SelectProduct;
 
-use App\VendingMachine\Application\Client\SelectProduct\SelectProductCommand;
+use App\VendingMachine\Application\Client\Command\SelectProductCommand;
 use App\VendingMachine\Application\Client\SelectProduct\SelectProductUseCase;
 use App\VendingMachine\Infrastructure\Transformer\OutputCentsTransformer;
 use OpenApi\Attributes as OA;
@@ -14,7 +14,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[OA\Tag(name: 'Select product')]
 final class SelectProductController extends AbstractController
 {
     public function __construct(

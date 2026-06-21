@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\VendingMachine\Application\Tecnician\Product;
 
+use App\VendingMachine\Application\Tecnician\Command\RefillSlotCommand;
 use App\VendingMachine\Application\VendingMachineRepositoryInterface;
 use App\VendingMachine\Domain\Catalog\InvalidProductException;
 use App\VendingMachine\Domain\Catalog\ProductType;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\VendingMachine\Application\Client\SelectProduct;
+namespace App\VendingMachine\Application\Client\Command;
 
 final readonly class SelectProductCommand
 {

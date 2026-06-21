@@ -12,6 +12,7 @@ use App\VendingMachine\Domain\Machine\CashFlow\InsertedCoins;
 use App\VendingMachine\Domain\Machine\Configuration;
 use App\VendingMachine\Domain\Machine\Slot\SlotConfiguration;
 use App\VendingMachine\Domain\Machine\Slot\SlotState;
+use App\VendingMachine\Domain\Machine\State\MachineState;
 use App\VendingMachine\Domain\VendingMachine;
 use App\VendingMachine\Infrastructure\Persistence\Doctrine\Entity\VendingMachineRecord;
 
@@ -30,30 +31,18 @@ final readonly class VendingMachineMapper
             configuration: $this->mapConfigurationToDomain($record->configuration()),
             slots: $this->mapSlotsToDomain($record->slots()),
             coinMachine: $coinMachine,
+            state: MachineState::tryFrom($record->state()) ?? MachineState::IDLE,
         );
     }
 
     public function hydrateRecord(VendingMachine $machine, VendingMachineRecord $record): void
     {
-        $record->setConfiguration(
-            $this->mapConfigurationToPersistence($machine->configuration())
-        );
-
-        $record->setSlots(
-            $this->mapSlotsToPersistence($machine->slots())
-        );
-
-        $record->setChangeInventory(
-            $this->mapChangeToPersistence($machine->coinMachine()->changeBox())
-        );
-
-        $record->setInsertedCoins(
-            $this->mapInsertedCoinsToPersistence($machine->coinMachine()->insertedCoins())
-        );
-
-        $record->setRetainedCash(
-            $machine->coinMachine()->retainedCash()
-        );
+        $record->setConfiguration($this->mapConfigurationToPersistence($machine->configuration()));
+        $record->setSlots($this->mapSlotsToPersistence($machine->slots()));
+        $record->setChangeInventory($this->mapChangeToPersistence($machine->coinMachine()->changeBox()));
+        $record->setInsertedCoins($this->mapInsertedCoinsToPersistence($machine->coinMachine()->insertedCoins()));
+        $record->setRetainedCash($machine->coinMachine()->retainedCash());
+        $record->setState($machine->state()->value);
     }
 
     /**
@@ -66,7 +55,7 @@ final readonly class VendingMachineMapper
         $mapped = [];
 
         foreach ($slots as $slot) {
-            $mapped[$slot['product']] = new SlotState(
+            $mapped[$slot['product']] = SlotState::load(
                 product: ProductType::from($slot['product']),
                 quantity: $slot['quantity'],
             );
@@ -144,8 +133,8 @@ final readonly class VendingMachineMapper
     {
         $slots = [];
 
-        foreach ($configuration as $item) {
-            $slots[$item['product']] = new SlotConfiguration(
+        foreach ($configuration as $key => $item) {
+            $slots[$key] = new SlotConfiguration(
                 ProductType::from($item['product']),
                 $item['price'],
             );
@@ -161,8 +150,8 @@ final readonly class VendingMachineMapper
     {
         $result = [];
 
-        foreach ($configuration->slots() as $slot) {
-            $result[] = [
+        foreach ($configuration->slots() as $key => $slot) {
+            $result[$key] = [
                 'product' => $slot->product->value,
                 'price' => $slot->price,
             ];

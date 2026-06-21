@@ -17,9 +17,6 @@ services:
     App\VendingMachine\Domain\:
         resource: '../src/VendingMachine/Domain/'
 
-    App\VendingMachine\Application\:
-        resource: '../src/VendingMachine/Application/'
-
     App\VendingMachine\Infrastructure\Controller\:
         resource: '../src/VendingMachine/Infrastructure/Controller/'
         tags: ['controller.service_arguments']
@@ -28,3 +25,12 @@ services:
         resource: '../src/VendingMachine/Infrastructure/'
         exclude:
             - '../src/VendingMachine/Infrastructure/Controller/'
+
+    App\VendingMachine\Application\:
+        resource: '../src/VendingMachine/Application/'
+        public: true
+        exclude:
+            - '../src/VendingMachine/Application/TransactionResultDTO.php'
+            - '../src/VendingMachine/Application/Client/Command'
+            - '../src/VendingMachine/Application/Tecnician/Command'
+            - '../src/VendingMachine/Application/Tecnician/Change/RefillChangeReponse.php'

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\VendingMachine\Application\Client\SelectProduct;
 
+use App\VendingMachine\Application\Client\Command\SelectProductCommand;
 use App\VendingMachine\Application\TransactionResultDTO;
 use App\VendingMachine\Application\VendingMachineRepositoryInterface;
 use App\VendingMachine\Domain\Catalog\InvalidProductException;
@@ -26,6 +27,7 @@ final readonly class SelectProductUseCase
 
         try {
             $machine = $this->repository->get($command->machineId);
+            dd($command->selector);
             $product = ProductType::fromSelector($command->selector);
             if (null === $product) {
                 throw new InvalidProductException();

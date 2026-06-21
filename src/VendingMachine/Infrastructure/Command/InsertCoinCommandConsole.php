@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\VendingMachine\Infrastructure\Command;
 
-use App\VendingMachine\Application\Client\InsertCoin\InsertCoinCommand;
+use App\VendingMachine\Application\Client\Command\InsertCoinCommand;
 use App\VendingMachine\Application\Client\InsertCoin\InsertCoinUseCase;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;

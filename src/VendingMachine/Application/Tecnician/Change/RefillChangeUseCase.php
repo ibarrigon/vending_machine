@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\VendingMachine\Application\Tecnician\Change;
 
+use App\VendingMachine\Application\Tecnician\Command\RefillChangeCommand;
 use App\VendingMachine\Application\VendingMachineRepositoryInterface;
 use App\VendingMachine\Domain\Coin\Coin;
 use App\VendingMachine\Domain\Coin\InvalidCoinException;

@@ -1,155 +1,42 @@
-# How to Start
+# Run
 
 [< Go back](../README.md)
 
-## Makefile
-
-(For Windows, WSL is required.)
-
-I provide a Makefile to make some commands easier to use.
-
-You can execute `make` or `make help` to see the available commands.
-
-## Start
+There are three ways to run the system. Only Client side, I don't provide Tecnician access, but you can "fill" the machine with
 
 ```console
-make init
+make fill_machine
 ```
 
-With this command you initialize the environment. It builds the Docker containers and generates the database.
+And then you can purchase everything like the machine has change and products
 
-### Note
+## End-points
 
-During the installation process, I added the following command:
+Currently it's a problem. The access to the API doc it's broken and shows the json
+
+```
+http://localhost:8080/docs
+```
+
+## By script
 
 ```console
-$(COMPOSE) exec app git config --global --add safe.directory /app
+make execute SCRIPT="1, 0.25, 0.25, GET-SODA"
 ```
 
-The reason is that I encountered an error, and this was the easiest and fastest way to resolve it. You may want to remove it.
+This do the same execution we have in statement but you can change SCRIPT with anything you want
 
-From my experience and after "talking" with my friend SkyNet (movie reference, you know what I mean), we concluded that it is probably related to working on Windows.
-
-## Tests
 
 ```console
-make test
+make examples
 ```
 
-This executes all tests, but maybe you do not want to run all of them. Perhaps you only want to run the unit tests?
+The exact examples you can read in provided statement
+
+## Interactive
 
 ```console
-make test-unit
+make interactive
 ```
 
-What you see it's what you get
-
-I also added other testing commands:
-
-### Functional Tests
-
-```console
-make test-functional
-```
-
-### Integration Tests
-
-```console
-make test-integration
-```
-
-These are the slowest tests because they depend on a database.
-
-### Coverage
-
-```console
-make coverage
-```
-
-This command generates the code coverage report.
-
-## Quality Code
-
-The following commands are available to verify code quality:
-
-### PHP CS Fixer
-
-```console
-make cs
-```
-
-Automatically fixes coding style issues.
-
-```console
-make cs-dry
-```
-
-Checks coding style issues without modifying any files.
-
-### PHPStan
-
-```console
-make phpstan
-```
-
-Runs static analysis on the project.
-
-### Quality
-
-```console
-make quality
-```
-
-Runs all available quality checks.
-
-## More Commands
-
-```console
-make build
-```
-
-Build Docker images.
-
-```console
-make install
-```
-
-Runs `composer install`.
-
-```console
-make up
-```
-
-For example, after restarting your computer...
-
-```console
-make down
-```
-
-You probably won't need this for now.
-
-```console
-make clear
-```
-
-Clears the Symfony cache.
-
-```console
-make kill
-```
-
-Maybe you want to remove everything related to the project — at least the Docker containers... this is the one.
-
-## For DB
-
-```console
-make db-init
-```
-
-Generate the database only if it does not exist previously.
-
-```console
-make db-reset
-```
-
-As the name suggests... recreates the database.
+You can put a lot of commands until you put SHUTDOWN.

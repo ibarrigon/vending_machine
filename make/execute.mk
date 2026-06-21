@@ -1,8 +1,11 @@
 .PHONY: execute examples interactive
 
-execute:
-	@$(COMPOSE) exec app php bin/console vending:sim SCRIPT="$(SCRIPT)"
+fill:
+	@echo "$(IYellow)Filling vending machine...$(Color_Off)"
+	@$(COMPOSE) exec app php bin/console vending:fill
 
+execute:
+	@$(COMPOSE) exec app php bin/console vending:sim "$(SCRIPT)"
 
 examples:
 	@$(MAKE) execute SCRIPT="1, 0.25, 0.25, GET-SODA"

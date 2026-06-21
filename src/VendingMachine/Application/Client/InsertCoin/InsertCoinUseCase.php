@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\VendingMachine\Application\Client\InsertCoin;
 
+use App\VendingMachine\Application\Client\Command\InsertCoinCommand;
 use App\VendingMachine\Application\VendingMachineRepositoryInterface;
 use App\VendingMachine\Domain\Coin\Coin;
 use App\VendingMachine\Domain\Coin\InvalidCoinException;

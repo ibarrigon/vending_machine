@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace App\VendingMachine\Infrastructure\Console;
 
-use App\VendingMachine\Application\Client\InsertCoin\InsertCoinCommand;
+use App\VendingMachine\Application\Client\Command\InsertCoinCommand;
+use App\VendingMachine\Application\Client\Command\ReturnCoinsCommand;
+use App\VendingMachine\Application\Client\Command\SelectProductCommand;
 use App\VendingMachine\Application\Client\InsertCoin\InsertCoinUseCase;
-use App\VendingMachine\Application\Client\ReturnCoins\ReturnCoinsCommand;
 use App\VendingMachine\Application\Client\ReturnCoins\ReturnCoinsUseCase;
-use App\VendingMachine\Application\Client\SelectProduct\SelectProductCommand;
 use App\VendingMachine\Application\Client\SelectProduct\SelectProductUseCase;
-use App\VendingMachine\Domain\Catalog\ProductType;
 use App\VendingMachine\Domain\Coin\Coin;
 
 final class VendingMachineCliSimulator
@@ -38,9 +37,9 @@ final class VendingMachineCliSimulator
         $this->insertCoin->execute(new InsertCoinCommand(1, $coin->value));
     }
 
-    public function selectProduct(ProductType $product): void
+    public function selectProduct(string $selector): void
     {
-        $this->selectProduct->execute(new SelectProductCommand(1, $product->value));
+        $this->selectProduct->execute(new SelectProductCommand(1, $selector));
     }
 
     public function returnCoins(): void

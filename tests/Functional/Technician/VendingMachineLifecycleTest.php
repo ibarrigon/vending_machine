@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Tests\Functional\Technician;
 
-use App\VendingMachine\Application\Tecnician\Change\RefillChangeCommand;
 use App\VendingMachine\Application\Tecnician\Change\RefillChangeUseCase;
 use App\VendingMachine\Application\Tecnician\CloseMachineUseCase;
+use App\VendingMachine\Application\Tecnician\Command\RefillChangeCommand;
+use App\VendingMachine\Application\Tecnician\Command\RefillSlotCommand;
 use App\VendingMachine\Application\Tecnician\OpenMachineUseCase;
-use App\VendingMachine\Application\Tecnician\Product\RefillSlotCommand;
 use App\VendingMachine\Application\Tecnician\Product\RefillSlotUseCase;
 use App\VendingMachine\Application\Tecnician\ResetCreditUseCase;
 use App\VendingMachine\Application\VendingMachineRepositoryInterface;

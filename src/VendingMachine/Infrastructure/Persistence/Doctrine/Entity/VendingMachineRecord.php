@@ -15,6 +15,9 @@ class VendingMachineRecord
     #[ORM\Column]
     private int $id;
 
+    #[ORM\Column(type: 'string')]
+    private string $state;
+
     /**
      * @var list<array{product: string, price: int}>
      */
@@ -79,6 +82,11 @@ class VendingMachineRecord
         $this->retainedCash = $retainedCash;
     }
 
+    public function setState(string $state): void
+    {
+        $this->state = $state;
+    }
+
     public function id(): int
     {
         return $this->id;
@@ -119,5 +127,10 @@ class VendingMachineRecord
     public function retainedCash(): int
     {
         return $this->retainedCash;
+    }
+
+    public function state(): string
+    {
+        return $this->state;
     }
 }

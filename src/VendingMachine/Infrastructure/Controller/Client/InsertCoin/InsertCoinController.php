@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\VendingMachine\Infrastructure\Controller\Client\InsertCoin;
 
-use App\VendingMachine\Application\Client\InsertCoin\InsertCoinCommand;
+use App\VendingMachine\Application\Client\Command\InsertCoinCommand;
 use App\VendingMachine\Application\Client\InsertCoin\InsertCoinUseCase;
 use OpenApi\Attributes as OA;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -13,7 +13,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[OA\Tag(name: 'Insert coin')]
 final class InsertCoinController extends AbstractController
 {
     public function __construct(

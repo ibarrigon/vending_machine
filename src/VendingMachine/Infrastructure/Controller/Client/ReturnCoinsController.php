@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\VendingMachine\Infrastructure\Controller\Client;
 
-use App\VendingMachine\Application\Client\ReturnCoins\ReturnCoinsCommand;
+use App\VendingMachine\Application\Client\Command\ReturnCoinsCommand;
 use App\VendingMachine\Application\Client\ReturnCoins\ReturnCoinsUseCase;
 use App\VendingMachine\Infrastructure\Transformer\OutputCentsTransformer;
 use OpenApi\Attributes as OA;
@@ -13,7 +13,6 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[OA\Tag(name: 'Return coins')]
 final class ReturnCoinsController extends AbstractController
 {
     public function __construct(

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\VendingMachine\Infrastructure\Command;
 
-use App\VendingMachine\Application\Client\ReturnCoins\ReturnCoinsCommand;
+use App\VendingMachine\Application\Client\Command\ReturnCoinsCommand;
 use App\VendingMachine\Application\Client\ReturnCoins\ReturnCoinsUseCase;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -24,9 +24,7 @@ final class ReturnCoinsCommandConsole extends Command
         // TODO: If we have a machine farm, we can use a parameter to add machine id
         $machineId = 1;
 
-        $coins = $this->returnCoint->execute(
-            new ReturnCoinsCommand(machineId: \intval($machineId)),
-        );
+        $coins = $this->returnCoint->execute(new ReturnCoinsCommand(machineId: \intval($machineId)));
 
         $output->writeln('Returned coins:');
 

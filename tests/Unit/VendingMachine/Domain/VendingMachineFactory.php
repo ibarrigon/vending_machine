@@ -47,10 +47,7 @@ final class VendingMachineFactory
     private static function slot(ProductType $product, int $amount): array
     {
         return [
-            $product->value => new SlotState(
-                product: $product,
-                quantity: $amount
-            ),
+            $product->value => SlotState::load(product: $product, quantity: $amount),
         ];
     }
 
@@ -60,9 +57,9 @@ final class VendingMachineFactory
     private static function defaultSlots(): array
     {
         return [
-            ProductType::SODA->value => new SlotState(ProductType::SODA, 10),
-            ProductType::WATER->value => new SlotState(ProductType::WATER, 10),
-            ProductType::JUICE->value => new SlotState(ProductType::JUICE, 10),
+            ProductType::SODA->value => SlotState::load(ProductType::SODA, 10),
+            ProductType::WATER->value => SlotState::load(ProductType::WATER, 10),
+            ProductType::JUICE->value => SlotState::load(ProductType::JUICE, 10),
         ];
     }
 

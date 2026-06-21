@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\VendingMachine\Application\Tecnician\Configuration;
+namespace App\VendingMachine\Application\Tecnician\Command;
 
 use App\VendingMachine\Domain\Machine\Slot\SlotState;
 

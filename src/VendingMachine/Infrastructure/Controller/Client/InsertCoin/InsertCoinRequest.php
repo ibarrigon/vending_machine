@@ -10,7 +10,7 @@ final readonly class InsertCoinRequest
 {
     public function __construct(
         #[Assert\NotNull]
-        #[Assert\Choice([5, 10, 25, 100])]
+        #[Assert\Choice(choices: [5, 10, 25, 100])]
         public int $coin,
     ) {
     }

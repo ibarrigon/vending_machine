@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\VendingMachine\Application\Client\ReturnCoins;
 
+use App\VendingMachine\Application\Client\Command\ReturnCoinsCommand;
 use App\VendingMachine\Application\VendingMachineRepositoryInterface;
 use App\VendingMachine\Domain\Coin\Coin;
 use Symfony\Component\Lock\LockFactory;
@@ -26,9 +27,7 @@ final readonly class ReturnCoinsUseCase
 
         try {
             $machine = $this->repository->get($command->machineId);
-
             $coins = $machine->returnCoins();
-
             $this->repository->save($machine);
 
             return array_values(

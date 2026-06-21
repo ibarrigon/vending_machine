@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\VendingMachine\Application\Tecnician\Change;
+namespace App\VendingMachine\Application\Tecnician\Command;
 
 final readonly class RefillChangeCommand
 {
