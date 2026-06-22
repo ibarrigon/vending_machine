@@ -2,13 +2,18 @@
 
 [< Go back](../README.md)
 
-Maybe you look at it and think: "WTF!"
+Maybe you'll look at it and think: *"WTF!"*
 
-Well, I used AI to set it up, iterated a few times, and once it worked, I moved on to something else.
+To be fair, that's exactly what I thought at some points too.
 
-Of course, I started with just a few instructions like:  
-"Quiero un nginx, un PHP y una base de datos con un volumen"... that was it.
+I used AI to bootstrap the whole setup, iterated on it a few times, and once everything was working, I moved on to solving the actual challenge.
 
-Well, I had to remove some configurations that Symfony adds by default... but honestly, it's fine.
+I started with a very sophisticated prompt:
 
-You want to know the images I created? Then search for any image with the start string "vending_machine_"
+> "I want an Nginx server, a PHP container, and a database with persistent volumes."
+
+That's it.
+
+I had to remove some Symfony defaults and tweak a few things here and there, but nothing particularly interesting happened after that.
+
+Want to know which images I created? Just search for any image whose name starts with `vending_machine_`.

@@ -24,7 +24,7 @@ final class CloseMachineUseCase
         try {
             $machine = $this->repository->get($machineId);
             if (!$machine->isInMaintenance()) {
-                throw new InvalidMachineStateException();
+                throw new InvalidMachineStateException('Machine cannot be closed.');
             }
 
             $machine->close();

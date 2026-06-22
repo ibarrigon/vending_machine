@@ -8,6 +8,7 @@ use App\VendingMachine\Application\Client\Command\InsertCoinCommand;
 use App\VendingMachine\Application\VendingMachineRepositoryInterface;
 use App\VendingMachine\Domain\Coin\Coin;
 use App\VendingMachine\Domain\Coin\InvalidCoinException;
+use App\VendingMachine\Domain\Machine\CashFlow\ChangeBoxFullException;
 use Symfony\Component\Lock\LockFactory;
 
 final readonly class InsertCoinUseCase
@@ -29,6 +30,10 @@ final readonly class InsertCoinUseCase
             $coin = Coin::tryFrom($command->coin);
             if (null === $coin) {
                 throw new InvalidCoinException();
+            }
+
+            if ($machine->fullChangeBox()) {
+                throw new ChangeBoxFullException();
             }
 
             $machine->insertCoin($coin);

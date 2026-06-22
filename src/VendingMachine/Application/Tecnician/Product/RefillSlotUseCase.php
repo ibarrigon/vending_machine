@@ -27,7 +27,7 @@ final class RefillSlotUseCase
         try {
             $machine = $this->repository->get($command->machineId);
             if (!$machine->canBeRefilled()) {
-                throw new InvalidMachineStateException();
+                throw new InvalidMachineStateException('Cannot fill the slot');
             }
 
             $product = ProductType::tryFrom($command->product);

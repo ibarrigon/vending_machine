@@ -30,8 +30,15 @@ final class VendingMachineSimulatorCommand extends Command
         /** @var string $script */
         $script = $input->getArgument('script');
 
-        $this->simulator->run($script);
+        try {
+            $output->writeln('Command: '.$script);
+            $output->writeln($this->simulator->run($script));
 
-        return Command::SUCCESS;
+            return Command::SUCCESS;
+        } catch (\Throwable $e) {
+            $output->writeln('Error: '.$e->getMessage());
+
+            return Command::FAILURE;
+        }
     }
 }

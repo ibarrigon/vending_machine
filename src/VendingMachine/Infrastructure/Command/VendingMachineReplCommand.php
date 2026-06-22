@@ -43,9 +43,12 @@ final class VendingMachineReplCommand extends Command
             }
 
             try {
-                $this->simulator->run($line);
+                $result = $this->simulator->run($line);
+                if (!empty($result)) {
+                    $output->writeln($result);
+                }
             } catch (\Throwable $e) {
-                $output->writeln('<error>'.$e->getMessage().'</error>');
+                $output->writeln('Error: '.$e->getMessage());
             }
         }
 

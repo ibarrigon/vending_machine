@@ -30,9 +30,7 @@ final readonly class ReturnCoinsUseCase
             $coins = $machine->returnCoins();
             $this->repository->save($machine);
 
-            return array_values(
-                array_map(fn (Coin $coin) => $coin->value, $coins)
-            );
+            return array_values(array_map(fn (Coin $coin) => $coin->value, $coins));
         } catch (\Throwable $e) {
             // TODO: Implement diferents exceptions and if machine becomes unavailable, set state as out of order
             throw $e;

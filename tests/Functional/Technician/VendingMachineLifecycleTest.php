@@ -74,15 +74,15 @@ final class VendingMachineLifecycleTest extends KernelTestCase
         $machine = $this->repository->get(1);
         $this->assertNotEquals(0, $machine->slotByProduct(ProductType::WATER));
 
-        $this->assertFalse($machine->coinMachine()->changeBox()->has(Coin::ONE_EURO));
+        $this->assertFalse($machine->hasCoins(Coin::ONE_EURO));
         $this->refillChange->execute(new RefillChangeCommand(1, Coin::ONE_EURO->value, 10));
 
         $machine = $this->repository->get(1);
-        $this->assertTrue($machine->coinMachine()->changeBox()->has(Coin::ONE_EURO));
+        $this->assertTrue($machine->hasCoins(Coin::ONE_EURO));
 
         $this->reset->execute(1);
         $machine = $this->repository->get(1);
-        $this->assertFalse($machine->coinMachine()->changeBox()->has(Coin::ONE_EURO));
+        $this->assertFalse($machine->hasCoins(Coin::ONE_EURO));
 
         // tecnician close machine
         $this->close->execute(1);

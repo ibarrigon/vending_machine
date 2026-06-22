@@ -2,41 +2,48 @@
 
 [< Go back](../README.md)
 
-There are three ways to run the system. Only Client side, I don't provide Tecnician access, but you can "fill" the machine with
+There are three ways to run the system.
+
+Only the client side is exposed. I do not provide direct access to technician operations, but you can pre-fill the machine by running:
 
 ```console
 make fill_machine
 ```
 
-And then you can purchase everything like the machine has change and products
+This will populate the machine with products and change, allowing you to purchase items immediately.
 
-## End-points
+## Endpoints
 
-Currently it's a problem. The access to the API doc it's broken and shows the json
+Currently, there is a known issue with the API documentation. The documentation endpoint is available, but instead of rendering the Swagger UI, it displays the raw JSON specification:
 
-```
+```text
 http://localhost:8080/docs
 ```
 
-## By script
+## By Script
 
 ```console
 make execute SCRIPT="1, 0.25, 0.25, GET-SODA"
 ```
 
-This do the same execution we have in statement but you can change SCRIPT with anything you want
+This executes the same scenario described in the statement, but you can replace the `SCRIPT` value with any sequence of commands you want.
 
+You can also run the predefined examples:
 
 ```console
 make examples
 ```
 
-The exact examples you can read in provided statement
+These are the exact examples provided in the original statement.
 
-## Interactive
+## Interactive Mode
 
 ```console
 make interactive
 ```
 
-You can put a lot of commands until you put SHUTDOWN.
+This starts an interactive session where you can enter commands continuously until you type:
+
+```text
+SHUTDOWN
+```

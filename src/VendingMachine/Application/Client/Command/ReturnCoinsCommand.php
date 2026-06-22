@@ -6,8 +6,7 @@ namespace App\VendingMachine\Application\Client\Command;
 
 final readonly class ReturnCoinsCommand
 {
-    public function __construct(
-        public int $machineId,
-    ) {
+    public function __construct(public int $machineId)
+    {
     }
 }

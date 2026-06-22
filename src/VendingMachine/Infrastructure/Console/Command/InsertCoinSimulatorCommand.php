@@ -14,8 +14,8 @@ final readonly class InsertCoinSimulatorCommand implements SimulatorCommand
     {
     }
 
-    public function execute(VendingMachineCliSimulator $simulator): void
+    public function execute(VendingMachineCliSimulator $simulator): string
     {
-        $simulator->insertCoin($this->coin);
+        return $simulator->insertCoin($this->coin);
     }
 }

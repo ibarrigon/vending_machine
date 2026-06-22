@@ -6,5 +6,5 @@ namespace App\VendingMachine\Infrastructure\Console;
 
 interface SimulatorCommand
 {
-    public function execute(VendingMachineCliSimulator $simulator): void;
+    public function execute(VendingMachineCliSimulator $simulator): string;
 }

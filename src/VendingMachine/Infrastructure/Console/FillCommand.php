@@ -17,7 +17,6 @@ use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Throwable;
 
 #[AsCommand(name: 'vending:fill')]
 final class FillCommand extends Command
@@ -50,9 +49,10 @@ final class FillCommand extends Command
             $output->writeln('Machine filled successfully');
 
             return Command::SUCCESS;
-        } catch (Throwable $e) {
-            $output->writeln('Reset machine failure: ' . $e->getMessage());
-            $output->writeln('Error: ' . $e->getTraceAsString());
+        } catch (\Throwable $e) {
+            $output->writeln('Reset machine failure: '.$e->getMessage());
+            $output->writeln('Error: '.$e->getTraceAsString());
+
             return Command::FAILURE;
         }
     }

@@ -23,7 +23,7 @@ final class DoctrineVendingMachineRepository implements VendingMachineRepository
         $record = $this->em->find(VendingMachineRecord::class, $id);
 
         if (!$record) {
-            throw new MachineNotFoundException();
+            throw new MachineNotFoundException('Machine not available');
         }
 
         return $this->mapper->toDomain($record);

@@ -19,7 +19,7 @@ class VendingMachineRecord
     private string $state;
 
     /**
-     * @var list<array{product: string, price: int}>
+     * @var array<string, array{product: string, price: int}>
      */
     #[ORM\Column(type: 'json')]
     private array $configuration = [];
@@ -46,7 +46,7 @@ class VendingMachineRecord
     private int $retainedCash = 0;
 
     /**
-     * @param list<array{product: string, price: int}> $configuration
+     * @param array<string, array{product: string, price: int}> $configuration
      */
     public function setConfiguration(array $configuration): void
     {
@@ -93,7 +93,7 @@ class VendingMachineRecord
     }
 
     /**
-     * @return list<array{product: string, price: int}>
+     * @return array<string, array{product: string, price: int}>
      */
     public function configuration(): array
     {

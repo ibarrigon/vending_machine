@@ -36,6 +36,6 @@ final class MachineInvariantsTest extends TestCase
     {
         $machine = VendingMachineFactory::create();
 
-        $this->assertFalse($machine->coinMachine()->hasInsertedCoins());
+        $this->assertFalse($machine->hasInsertedCoins());
     }
 }

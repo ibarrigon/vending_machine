@@ -9,7 +9,7 @@ use App\VendingMachine\Infrastructure\Console\Command\InsertCoinSimulatorCommand
 use App\VendingMachine\Infrastructure\Console\Command\ReturnCoinsSimulatorCommand;
 use App\VendingMachine\Infrastructure\Console\Command\SelectProductSimulatorCommand;
 
-final class VendingMachineScriptParser
+final readonly class VendingMachineScriptParser
 {
     /**
      * @return list<SimulatorCommand>
@@ -19,7 +19,6 @@ final class VendingMachineScriptParser
         $tokens = array_map('trim', explode(',', $input));
 
         $commands = [];
-
         foreach ($tokens as $token) {
             $commands[] = $this->map($token);
         }
@@ -33,13 +32,15 @@ final class VendingMachineScriptParser
             return new InsertCoinSimulatorCommand($this->mapCoin((float) $token));
         }
 
-        return new SelectProductSimulatorCommand($token);
- 
-        if ('RETURN' === $token) {
+        if ('RETURN-COIN' === $token) {
             return new ReturnCoinsSimulatorCommand();
         }
 
-        throw new \InvalidArgumentException("Unknown token: $token");
+        try {
+            return new SelectProductSimulatorCommand($token);
+        } catch (\Throwable) {
+            throw new \InvalidArgumentException("Unknown token: $token");
+        }
     }
 
     private function mapCoin(float $value): Coin

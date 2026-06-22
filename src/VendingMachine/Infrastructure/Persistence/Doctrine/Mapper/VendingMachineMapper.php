@@ -127,7 +127,7 @@ final readonly class VendingMachineMapper
     }
 
     /**
-     * @param list<array{product: string, price: int}> $configuration
+     * @param array<string, array{product: string, price: int}> $configuration
      */
     private function mapConfigurationToDomain(array $configuration): Configuration
     {
@@ -144,7 +144,7 @@ final readonly class VendingMachineMapper
     }
 
     /**
-     * @return list<array{product: string, price: int}>
+     * @return array<string, array{product: string, price: int}>
      */
     private function mapConfigurationToPersistence(Configuration $configuration): array
     {

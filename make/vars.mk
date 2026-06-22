@@ -1,9 +1,11 @@
 ENV ?= dev
 
+PROJECT := vending_machine
+
 ifeq ($(ENV),test)
-    COMPOSE := docker compose -f docker-compose.yaml -f docker-compose.test.yaml
+    COMPOSE := docker compose -p $(PROJECT) -f docker-compose.yaml -f docker-compose.test.yaml
 else
-    COMPOSE := docker compose
+    COMPOSE := docker compose -p $(PROJECT) -f docker-compose.yaml
 endif
 
 Color_Off=\033[0m

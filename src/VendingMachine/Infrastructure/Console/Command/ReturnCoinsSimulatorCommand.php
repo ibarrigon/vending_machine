@@ -9,8 +9,8 @@ use App\VendingMachine\Infrastructure\Console\VendingMachineCliSimulator;
 
 final readonly class ReturnCoinsSimulatorCommand implements SimulatorCommand
 {
-    public function execute(VendingMachineCliSimulator $simulator): void
+    public function execute(VendingMachineCliSimulator $simulator): string
     {
-        $simulator->returnCoins();
+        return $simulator->returnCoins();
     }
 }

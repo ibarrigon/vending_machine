@@ -4,11 +4,11 @@
 
 ## Makefile
 
-(For Windows, WSL is required.)
+(For Windows users, WSL is required.)
 
-I provide a Makefile to make some commands easier to use.
+I provide a Makefile to make common commands easier to use.
 
-You can execute `make` or `make help` to see the available commands.
+You can run `make` or `make help` to see the list of available commands.
 
 ## Start
 
@@ -16,7 +16,7 @@ You can execute `make` or `make help` to see the available commands.
 make init
 ```
 
-With this command you initialize the environment. It builds the Docker containers and generates the database.
+This command initializes the environment. It builds the Docker containers and creates the database.
 
 ### Note
 
@@ -26,9 +26,9 @@ During the installation process, I added the following command:
 $(COMPOSE) exec app git config --global --add safe.directory /app
 ```
 
-The reason is that I encountered an error, and this was the easiest and fastest way to resolve it. You may want to remove it.
+The reason is that I encountered an error, and this was the quickest way to solve it. You may want to remove it if it is not needed in your environment.
 
-From my experience and after "talking" with my friend SkyNet (movie reference, you know what I mean), we concluded that it is probably related to working on Windows.
+Based on my experience and after "talking" with my friend SkyNet (movie reference, you know what I mean), we concluded that it is probably related to running the project on Windows.
 
 ## Tests
 
@@ -36,15 +36,15 @@ From my experience and after "talking" with my friend SkyNet (movie reference, y
 make test
 ```
 
-This executes all tests, but maybe you do not want to run all of them. Perhaps you only want to run the unit tests?
+This executes all tests, but maybe you do not want to run everything. Perhaps you only want to execute the unit tests?
 
 ```console
 make test-unit
 ```
 
-What you see it's what you get
+What you see is what you get.
 
-I also added other testing commands:
+I also added some additional testing commands:
 
 ### Functional Tests
 
@@ -52,13 +52,7 @@ I also added other testing commands:
 make test-functional
 ```
 
-### Integration Tests
-
-```console
-make test-integration
-```
-
-These are the slowest tests because they depend on a database.
+Runs the functional test suite.
 
 ### Coverage
 
@@ -66,9 +60,9 @@ These are the slowest tests because they depend on a database.
 make coverage
 ```
 
-This command generates the code coverage report.
+Generates the code coverage report.
 
-## Quality Code
+## Code Quality
 
 The following commands are available to verify code quality:
 
@@ -108,7 +102,7 @@ Runs all available quality checks.
 make build
 ```
 
-Build Docker images.
+Builds the Docker images.
 
 ```console
 make install
@@ -120,13 +114,17 @@ Runs `composer install`.
 make up
 ```
 
-For example, after restarting your computer...
+Starts the environment.
+
+For example, after restarting your computer, this is probably the command you want to run.
 
 ```console
 make down
 ```
 
-You probably won't need this for now.
+Stops the environment.
+
+You probably will not need this very often.
 
 ```console
 make clear
@@ -138,18 +136,18 @@ Clears the Symfony cache.
 make kill
 ```
 
-Maybe you want to remove everything related to the project — at least the Docker containers... this is the one.
+Removes everything related to the project in Docker, including containers and other generated resources.
 
-## For DB
+## Database
 
 ```console
 make db-init
 ```
 
-Generate the database only if it does not exist previously.
+Creates the database only if it does not already exist.
 
 ```console
 make db-reset
 ```
 
-As the name suggests... recreates the database.
+As the name suggests, it recreates the database from scratch.

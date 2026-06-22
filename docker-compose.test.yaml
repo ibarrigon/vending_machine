@@ -1,24 +1,25 @@
 services:
-  tests:
+  vending_machine_tests:
     image: vending_machine_test
     build:
       context: .
-      dockerfile: docker/php/Dockerfile
+      dockerfile: docker/php/Dockerfile.test
     volumes:
       - ./:/app
     depends_on:
-      - mysql_test
+      - vending_machine_mysql_test
     environment:
       APP_ENV: test
-      DATABASE_URL: mysql://vending:vending@mysql_test:3306/vending_machine_test
+      DATABASE_URL: mysql://vending:vending@vending_machine_mysql_test:3306/vending_machine_test
     command: vendor/bin/phpunit
 
-  mysql_test:
+  vending_machine_mysql_test:
     image: mysql:8
+    container_name: vending_machine_mysql_test
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: vending_machine_test
       MYSQL_USER: vending
-      MYSQL_PASSWORD: vending      
+      MYSQL_PASSWORD: vending
     volumes:
       - ./docker/mysql/init-test.sql:/docker-entrypoint-initdb.d/init.sql

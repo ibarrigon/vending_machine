@@ -6,4 +6,8 @@ namespace App\VendingMachine\Domain\Machine\CashFlow;
 
 final class ChangeBoxFullException extends \Exception
 {
+    public function __construct()
+    {
+        parent::__construct('Full change box');
+    }
 }

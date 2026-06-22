@@ -8,7 +8,8 @@ use App\VendingMachine\Domain\Coin\Coin;
 
 final readonly class ChangeBox
 {
-    private const MAX_COINS = 200;
+    private const MACHINE_MAX_COINS = 400;
+    private const CHANGE_MAX_COINS = 200;
     private const LOW_CHANGE_THRESHOLD = 20;
 
     /**
@@ -35,7 +36,7 @@ final readonly class ChangeBox
             Coin::from($value); // valida moneda
 
             if ($qty < 0) {
-                throw new InvalidChangeBoxState();
+                throw new InvalidChangeBoxState('Invalid value. Negative');
             }
 
             $normalized[$value] = $qty;
@@ -57,11 +58,11 @@ final readonly class ChangeBox
         return ($this->coins[$coin->value] ?? 0) > 0;
     }
 
-    public function add(Coin $coin): self
+    public function add(Coin $coin, int $max = self::CHANGE_MAX_COINS): self
     {
         $coins = $this->coins;
 
-        if ($this->totalCoins() >= self::MAX_COINS) {
+        if ($this->totalCoins() >= $max) {
             throw new ChangeBoxFullException();
         }
 
@@ -83,7 +84,7 @@ final readonly class ChangeBox
         $box = $this;
 
         foreach ($coins as $coin) {
-            $box = $box->add($coin);
+            $box = $box->add($coin, self::MACHINE_MAX_COINS);
         }
 
         return $box;
@@ -139,16 +140,12 @@ final readonly class ChangeBox
             }
         }
 
-        if ($amount > 0) {
-            throw new InsufficientChangeException();
-        }
-
         return $result;
     }
 
     public function refill(Coin $coin, int $quantity): ChangeBoxRefillResult
     {
-        $freeCapacity = max(0, self::MAX_COINS - $this->totalCoins());
+        $freeCapacity = max(0, self::CHANGE_MAX_COINS - $this->totalCoins());
         $accepted = min($quantity, $freeCapacity);
 
         $coins = $this->coins;
@@ -167,6 +164,11 @@ final readonly class ChangeBox
     public function quantityOf(Coin $coin): int
     {
         return $this->coins[$coin->value] ?? 0;
+    }
+
+    public function fullChangeBox(): bool
+    {
+        return $this->totalCoins() >= self::MACHINE_MAX_COINS;
     }
 
     public function needChange(Coin $coin): bool

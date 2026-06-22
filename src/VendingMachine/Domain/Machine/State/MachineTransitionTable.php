@@ -27,12 +27,12 @@ final class MachineTransitionTable
     public static function transition(MachineState $state, MachineOutcome $eventOrOutcome): MachineState
     {
         return self::OUTCOME_TRANSITIONS[$state->value][$eventOrOutcome->value]
-            ?? throw new InvalidMachineStateTransitionException();
+            ?? throw new InvalidMachineStateTransitionException('Theres an status error');
     }
 
     public static function eventTransition(MachineState $state, MachineEvent $event): MachineState
     {
         return self::EVENT_TRANSITIONS[$state->value][$event->value]
-        ?? throw new InvalidMachineStateTransitionException();
+        ?? throw new InvalidMachineStateTransitionException('Theres an status error');
     }
 }

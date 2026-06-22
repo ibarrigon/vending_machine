@@ -46,7 +46,7 @@ final readonly class Configuration
     public function slotConfiguration(ProductType $product): SlotConfiguration
     {
         if (!isset($this->slots[$product->value])) {
-            throw new ProductNotFoundException();
+            throw new ProductNotFoundException('This product cannot be purchased');
         }
 
         return $this->slots[$product->value];

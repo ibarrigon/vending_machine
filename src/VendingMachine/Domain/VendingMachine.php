@@ -51,10 +51,20 @@ final class VendingMachine
         );
     }
 
+    public function fullChangeBox(): bool
+    {
+        return $this->coinMachine->fullChangeBox();
+    }
+
+    public function reset(): void
+    {
+        $this->coinMachine->reset();
+    }
+
     public function insertCoin(Coin $coin): void
     {
         if (!MachineGuards::canInsertCoin($this->state)) {
-            throw new InvalidMachineStateException();
+            throw new InvalidMachineStateException('Machine out of service');
         }
 
         $this->coinMachine->insertCoin($coin);
@@ -65,7 +75,7 @@ final class VendingMachine
     public function selectProduct(ProductType $product): TransactionResult
     {
         if (!MachineGuards::canSelectProduct($this->state)) {
-            throw new InvalidMachineStateException();
+            throw new InvalidMachineStateException('Insert coins');
         }
 
         $this->state = MachineTransitionTable::eventTransition($this->state, MachineEvent::SELECT_PRODUCT);
@@ -111,7 +121,7 @@ final class VendingMachine
     public function returnCoins(): array
     {
         if (!MachineGuards::canReturnCoins($this->state)) {
-            throw new InvalidMachineStateException();
+            return [];
         }
 
         $coins = $this->coinMachine->returnCoins();
@@ -191,7 +201,7 @@ final class VendingMachine
     public function slotByProduct(ProductType $product): SlotState
     {
         if (!isset($this->slots[$product->value])) {
-            throw new ProductNotFoundException();
+            throw new OutOfStockException();
         }
 
         return $this->slots[$product->value];
@@ -205,5 +215,15 @@ final class VendingMachine
     public function resetConfiguration(): void
     {
         $this->configuration = Configuration::factorySettings();
+    }
+
+    public function hasInsertedCoins(): bool
+    {
+        return $this->coinMachine->hasInsertedCoins();
+    }
+
+    public function hasCoins(Coin $coin): bool
+    {
+        return $this->coinMachine->hasCoins($coin);
     }
 }

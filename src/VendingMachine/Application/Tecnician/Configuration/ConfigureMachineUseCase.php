@@ -25,7 +25,7 @@ final class ConfigureMachineUseCase
         try {
             $machine = $this->repository->get($command->machineId);
             if (!$machine->isInMaintenance()) {
-                throw new InvalidMachineStateException();
+                throw new InvalidMachineStateException('Cannot configure machine');
             }
 
             // $machine->modifyConfig($command->config);

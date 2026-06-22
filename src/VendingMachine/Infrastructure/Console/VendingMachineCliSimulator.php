@@ -11,6 +11,8 @@ use App\VendingMachine\Application\Client\InsertCoin\InsertCoinUseCase;
 use App\VendingMachine\Application\Client\ReturnCoins\ReturnCoinsUseCase;
 use App\VendingMachine\Application\Client\SelectProduct\SelectProductUseCase;
 use App\VendingMachine\Domain\Coin\Coin;
+use App\VendingMachine\Infrastructure\Transformer\OutputReturnCoinsTransformer;
+use App\VendingMachine\Infrastructure\Transformer\OutputSelectProductTransformer;
 
 final class VendingMachineCliSimulator
 {
@@ -19,33 +21,43 @@ final class VendingMachineCliSimulator
         private SelectProductUseCase $selectProduct,
         private ReturnCoinsUseCase $returnCoins,
         private VendingMachineScriptParser $parser,
+        private OutputSelectProductTransformer $selectProductTransformer,
+        private OutputReturnCoinsTransformer $outputReturn,
     ) {
     }
 
-    public function run(string $input): void
+    /**
+     * @return list<string>
+     */
+    public function run(string $input): array
     {
-        $commands = $this->parser->parse($input);
+        $configs = $this->parser->parse($input);
 
-        foreach ($commands as $command) {
-            $command->execute($this);
+        $output = [];
+        foreach ($configs as $config) {
+            $output[] = $config->execute($this);
         }
+
+        return $output;
     }
 
     // 👇 fachada pública para comandos
-    public function insertCoin(Coin $coin): void
+    public function insertCoin(Coin $coin): string
     {
         $this->insertCoin->execute(new InsertCoinCommand(1, $coin->value));
+
+        return '';
     }
 
-    public function selectProduct(string $selector): void
+    public function selectProduct(string $selector): string
     {
-        $this->selectProduct->execute(new SelectProductCommand(1, $selector));
-    }
-
-    public function returnCoins(): void
-    {
-        $this->returnCoins->execute(
-            new ReturnCoinsCommand(1)
+        return $this->selectProductTransformer->transform(
+            $this->selectProduct->execute(new SelectProductCommand(1, $selector))
         );
+    }
+
+    public function returnCoins(): string
+    {
+        return $this->outputReturn->transform($this->returnCoins->execute(new ReturnCoinsCommand(1)));
     }
 }

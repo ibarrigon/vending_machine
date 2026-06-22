@@ -21,7 +21,7 @@ help:
 	@echo "   $(BCyan)test:                 $(Color_Off)Execute all test"
 	@echo "   $(BCyan)test-unit:            $(Color_Off)Execute ONLY Unit test"
 	@echo "   $(BCyan)test-functional:      $(Color_Off)Execute ONLY Functional test"
-	@echo "   $(BCyan)test-integration:     $(Color_Off)Execute ONLY integration test (use SQLlite)"
+	@echo "   $(BCyan)test-integration:     $(Color_Off)Execute ONLY integration test"
 	@echo "   $(BCyan)coverage:             $(Color_Off)Generate coverage"
 	@echo "   $(IPurple)Quality$(Color_Off)"
 	@echo "   $(BCyan)cs:                   $(Color_Off)Execute cs-fixer"

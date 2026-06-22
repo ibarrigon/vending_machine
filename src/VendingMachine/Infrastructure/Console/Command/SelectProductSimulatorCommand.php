@@ -13,8 +13,8 @@ final readonly class SelectProductSimulatorCommand implements SimulatorCommand
     {
     }
 
-    public function execute(VendingMachineCliSimulator $simulator): void
+    public function execute(VendingMachineCliSimulator $simulator): string
     {
-        $simulator->selectProduct($this->selector);
+        return $simulator->selectProduct($this->selector);
     }
 }

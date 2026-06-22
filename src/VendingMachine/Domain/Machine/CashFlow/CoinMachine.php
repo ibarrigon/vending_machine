@@ -41,6 +41,11 @@ final class CoinMachine
     {
         $coins = $this->insertedCoins->coins();
         $this->insertedCoins = $this->insertedCoins->clear();
+        foreach ($coins as $coin) {
+            $this->retainedCash -= $coin->value;
+        }
+
+        $this->retainedCash = max($this->retainedCash, 0); // Fallback by errors, but never can be negative
 
         return $coins;
     }
@@ -52,25 +57,16 @@ final class CoinMachine
         }
 
         $candidateBox = $this->changeBox->addMany($this->insertedCoins->coins());
-
         $changeAmount = $this->retainedCash - $price;
-
-        try {
-            $change = $candidateBox->withdraw($changeAmount);
-            $this->changeBox = $candidateBox->removeMany($change);
-            $retainedCash = 0;
-        } catch (InsufficientChangeException) {
-            $change = [];
-            $this->changeBox = $candidateBox;
-            $retainedCash = $changeAmount;
-        }
-
+        $change = $candidateBox->withdraw($changeAmount);
+        $returnedAmount = array_sum(array_map(static fn (Coin $coin) => $coin->value, $change));
+        $this->changeBox = $candidateBox->removeMany($change);
         $this->insertedCoins = $this->insertedCoins->clear();
-        $this->retainedCash = $retainedCash;
+        $this->retainedCash = $changeAmount - $returnedAmount;
 
         return new PurchaseResult(
             change: $change,
-            retainedCash: $retainedCash,
+            retainedCash: $this->retainedCash,
         );
     }
 
@@ -122,5 +118,15 @@ final class CoinMachine
         $this->changeBox = ChangeBox::empty();
         $this->insertedCoins = InsertedCoins::empty();
         $this->resetRetainedCash();
+    }
+
+    public function fullChangeBox(): bool
+    {
+        return $this->changeBox->fullChangeBox();
+    }
+
+    public function hasCoins(Coin $coin): bool
+    {
+        return $this->changeBox->has($coin);
     }
 }

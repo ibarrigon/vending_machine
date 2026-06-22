@@ -23,8 +23,5 @@ clear:
 	$(COMPOSE) exec app bin/console cache:clear
 
 kill:
-	docker stop $(docker ps -aq)
-	docker rm $(docker ps -aq)
-	docker rmi $(docker images -q)
-	docker volume rm $(docker volume ls -q)
-	docker network prune -f
+	@echo "Stopping vending_machine stack..."
+	@$(COMPOSE) down --remove-orphans --volumes --rmi local

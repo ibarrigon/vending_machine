@@ -16,7 +16,7 @@ final readonly class SlotState
         private int $quantity,
     ) {
         if ($quantity < 0 || $quantity > self::MAX_CAPACITY) {
-            throw new InvalidSlotQuantityException();
+            throw new InvalidSlotQuantityException('Inconsistent data'); // Mannipulated data???
         }
     }
 

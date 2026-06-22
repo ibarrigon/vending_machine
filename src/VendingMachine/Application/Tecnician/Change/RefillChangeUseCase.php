@@ -28,7 +28,7 @@ final readonly class RefillChangeUseCase
         try {
             $machine = $this->repository->get($command->machineId);
             if (!$machine->canBeRefilled()) {
-                throw new InvalidMachineStateException();
+                throw new InvalidMachineStateException('Cannot add change');
             }
 
             $coin = Coin::tryFrom($command->coin);
