@@ -28,6 +28,14 @@ Everybody knows that floating-point arithmetic is a pain. One of the first decis
 
 I also decided to keep the price inside the `Product` entity and treat it as immutable.
 
+You may see some warnings:
+
+```text
+mysql: [Warning] Using a password on the command line interface can be insecure.
+```
+
+I am aware that this should be improved, but at the moment (as you will read throughout the project), I focused my efforts elsewhere.
+
 ## Versions
 
 1. PHP 8.4

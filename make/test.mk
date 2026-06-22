@@ -31,6 +31,7 @@ coverage:
 
 _coverage:
 	@echo "$(IYellow)Generate coverage...$(Color_Off)"
+	@$(MAKE) -s _test-db-reset
 	@$(COMPOSE) run --rm vending_machine_tests php \
 		-d xdebug.mode=coverage \
 		vendor/bin/phpunit \

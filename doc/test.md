@@ -25,9 +25,7 @@ And here is what I learned:
 - **Unit tests** are about *what the system needs to do*
 - **Property-based tests** (or "rule tests") are about *what should never be broken*
 
-You might say:
-
-*"Hey! Aren't some of these tests duplicated?"*
+You might say: *"Hey! Aren't some of these tests duplicated?"*
 
 And yes, I agree... to some degree.
 
@@ -37,6 +35,9 @@ It is true that some behaviors checked by property-based tests can also appear i
 - Property-based tests express system-wide rules and invariants
 
 Together, they provide better coverage and a clearer mental model of how the system behaves.
+
+I know the coverage could be higher, but I focused my efforts on making the tests I wrote as complete and correct as possible.
+Ah! you won’t find the coverage folder in the repository, as it has been added to .gitignore. In my opinion, it should never be committed, just like some configuration files (e.g. phpunit.xml). The coverage report is something that should be generated during deployment, and in staging environments for traceability, or locally if needed for inspection.
 
 ## Unit Tests
 
